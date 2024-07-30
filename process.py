@@ -66,6 +66,7 @@ def process_billing_csv():
     print(total)
     generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
     path = rf"{destination}\{fileName}"
+    print(path)
     return path
 
 if __name__ == "__main__":
