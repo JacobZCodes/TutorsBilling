@@ -5,6 +5,7 @@ from CSV import findMostRecentCSV, csv_to_txt
 import dates
 from dates import convert_comma_date_to_slash_date, is_past_today
 from download import download_acuity_data
+import os
 
 invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Diagnostic']
 destination = r"C:\Users\Jacob\Downloads" # processed info goes here
@@ -52,22 +53,27 @@ def generateTxt(fileName, destination, names, billing, total): # pretty write bi
 
 def process_billing_csv():
     # download_acuity_data() # downloads billing CSV from Acuity
-    csv_path = findMostRecentCSV(download_directory) 
-    df_all = pd.read_csv(csv_path)
-    df_not_paid = clean_df(df_all)
-    billing = createBillingDict(df_not_paid)
-    # Sort names alphabetically
-    tempList = []
-    for key in billing.keys():
-        tempList.append(key)
-    sortedNames = sorted(tempList)
-    fileName = csv_to_txt(csv_path) # schedule.txt
-    total = getTotalOwed(billing)
-    print(total)
-    generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
-    path = rf"{destination}\{fileName}"
-    print(path)
-    return path
+    print(os.getenv("ACUITY_USER"))
+    print(os.getenv("ACUITY_PASSWORD"))
+    print(os.getenv("GMAIL_PASS"))
+    print(os.getenv("GMAIL_RECEPIENTS"))
+    print(os.getenv("GMAIL_SEND_ADDRESS"))
+    # csv_path = findMostRecentCSV(download_directory) 
+    # df_all = pd.read_csv(csv_path)
+    # df_not_paid = clean_df(df_all)
+    # billing = createBillingDict(df_not_paid)
+    # # Sort names alphabetically
+    # tempList = []
+    # for key in billing.keys():
+    #     tempList.append(key)
+    # sortedNames = sorted(tempList)
+    # fileName = csv_to_txt(csv_path) # schedule.txt
+    # total = getTotalOwed(billing)
+    # print(total)
+    # generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
+    # path = rf"{destination}\{fileName}"
+    # print(path)
+    # return path
 
 if __name__ == "__main__":
     process_billing_csv()

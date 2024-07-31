@@ -23,5 +23,13 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
 
+    - name: Set secrets
+      env:
+      ACUITY_PASSWORD: ${{secrets.ACUITY_PASSWORD}}
+      ACUITY_USER: ${{secrets.ACUITY_USER}}
+      GMAIL_PASS: ${{secrets.GMAIL_PASS}}
+      GMAIL_RECEPIENTS: ${{secrets.GMAIL_RECEPIENTS}}
+      GMAIL_SEND_ADDRESS: ${{secrets.GMAIL_SEND_ADDRESS}}
+
     - name: Run the script
       run: py process.py
