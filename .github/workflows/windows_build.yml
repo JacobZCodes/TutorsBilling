@@ -9,6 +9,9 @@ on:
       - main
 
 jobs:
+  receive_secrets:
+    uses: ./.github/workflows/pass_secrets.yml
+    secrets: inherit
   build:
     runs-on: windows-latest
 
@@ -25,8 +28,7 @@ jobs:
 
     - name: Call reusable workflow to set secrets
       uses: ./.github/workflows/pass_secrets.yml
-      secrets:
-        inherit
+      secrets: inherit
 
     - name: Run the script
       run: py process.py
