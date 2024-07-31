@@ -1,7 +1,6 @@
 import os
 import smtplib
 from email.message import EmailMessage
-from process import process_billing_csv
 from dates import today
 
 # mostRecentData = process_billing_csv()
@@ -15,7 +14,7 @@ def send_file(email_pass,sender,recepients,content_path):
         you = recipient  # Recipient's email address
 
         # Read the contents of your text file
-        with open(content) as fp:
+        with open(content_path) as fp:
             msg = EmailMessage()
             msg.set_content(fp.read())
 
