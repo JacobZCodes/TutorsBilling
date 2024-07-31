@@ -9,9 +9,6 @@ on:
       - main
 
 jobs:
-  receive_secrets:
-    uses: ./.github/workflows/pass_secrets.yml
-    secrets: inherit
   build:
     runs-on: windows-latest
 
