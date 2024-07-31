@@ -9,11 +9,6 @@ on:
       - main
 
 jobs:
-  get-secrets:
-    echo "Importing secrets..."
-    uses: .github/workflows/pass_secrets.yml
-    secrets: inherit
-
   build:
     runs-on: windows-latest
 
@@ -28,11 +23,10 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
 
-    - name: Set secrets
-      run:
-        echo "Setting env variables"
-      env:
-        ACUITY_PASSWORD: ${{ secrets.ACUITY_PASS }}
+    - name: Call reusable workflow to set secrets
+      uses: ./.github/workflows/pass_secrets.yml
+      secrets:
+        ACUITY_PASS: ${{ secrets.ACUITY_PASS }}
         ACUITY_USER: ${{ secrets.ACUITY_USER }}
         GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
         GMAIL_RECEPIENTS: ${{ secrets.GMAIL_RECEPIENTS }}
@@ -40,3 +34,9 @@ jobs:
 
     - name: Run the script
       run: py process.py
+      env:
+        ACUITY_PASSWORD: ${{ secrets.ACUITY_PASS }}
+        ACUITY_USER: ${{ secrets.ACUITY_USER }}
+        GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+        GMAIL_RECEPIENTS: ${{ secrets.GMAIL_RECEPIENTS }}
+        GMAIL_SEND_ADDRESS: ${{ secrets.GMAIL_SEND_ADDRESS }}
