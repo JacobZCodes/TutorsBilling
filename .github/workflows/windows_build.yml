@@ -26,13 +26,14 @@ jobs:
 
     - name: Set up Chromedriver
       uses: nanasess/setup-chromedriver@v2
-      
+
     - name: Start Chromedriver
       run: chromedriver --url-base=/wd/hub &
 
     - name: Run the script
       run: py process.py
       env:
+        CHROMEDRIVER_PATH: ${{ env.CHROMEDRIVER_PATH }}        
         ACUITY_PASSWORD: ${{ secrets.ACUITY_PASS }}
         ACUITY_USER: ${{ secrets.ACUITY_USER }}
         GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
