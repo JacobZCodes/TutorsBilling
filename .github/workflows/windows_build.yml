@@ -27,11 +27,11 @@ jobs:
       run:
         echo "Setting env variables"
       env:
-      ACUITY_PASSWORD: ${{secrets.ACUITY_PASSWORD}}
-      ACUITY_USER: ${{secrets.ACUITY_USER}}
-      GMAIL_PASS: ${{secrets.GMAIL_PASS}}
-      GMAIL_RECEPIENTS: ${{secrets.GMAIL_RECEPIENTS}}
-      GMAIL_SEND_ADDRESS: ${{secrets.GMAIL_SEND_ADDRESS}}
+      ACUITY_PASSWORD: ${{ secrets.ACUITY_PASSWORD }}
+      ACUITY_USER: ${{ secrets.ACUITY_USER }}
+      GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+      GMAIL_RECEPIENTS: ${{ secrets.GMAIL_RECEPIENTS }}
+      GMAIL_SEND_ADDRESS: ${{ secrets.GMAIL_SEND_ADDRESS }}
 
     - name: Run the script
       run: py process.py
