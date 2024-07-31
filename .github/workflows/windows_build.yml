@@ -25,7 +25,7 @@ jobs:
 
     - name: Set secrets
       run:
-        | echo "Setting env variables"
+        echo "Setting env variables"
       env:
       ACUITY_PASSWORD: ${{secrets.ACUITY_PASSWORD}}
       ACUITY_USER: ${{secrets.ACUITY_USER}}
