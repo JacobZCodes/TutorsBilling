@@ -11,7 +11,7 @@ on:
 jobs:
   get-secrets:
     echo "Importing secrets..."
-    uses: .github\workflows\pass_secrets.yml
+    uses: .github/workflows/pass_secrets.yml
     secrets: inherit
 
   build:
