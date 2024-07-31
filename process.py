@@ -56,20 +56,19 @@ def generateTxt(fileName, destination, names, billing, total): # pretty write bi
     return (rf"{destination}\{fileName}")
 
 def process_billing_csv():
-    print("hello!")
-    download_acuity_data() # downloads billing CSV from Acuity
-    csv_path = findMostRecentCSV(download_directory) 
-    df_all = pd.read_csv(csv_path)
-    df_not_paid = clean_df(df_all)
-    billing = createBillingDict(df_not_paid)
-    # Sort names alphabetically
-    tempList = []
-    for key in billing.keys():
-        tempList.append(key)
-    sortedNames = sorted(tempList)
-    fileName = csv_to_txt(csv_path) # schedule.txt
-    total = getTotalOwed(billing)
-    content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
+    # download_acuity_data() # downloads billing CSV from Acuity
+    # csv_path = findMostRecentCSV(download_directory) 
+    # df_all = pd.read_csv(csv_path)
+    # df_not_paid = clean_df(df_all)
+    # billing = createBillingDict(df_not_paid)
+    # # Sort names alphabetically
+    # tempList = []
+    # for key in billing.keys():
+    #     tempList.append(key)
+    # sortedNames = sorted(tempList)
+    # fileName = csv_to_txt(csv_path) # schedule.txt
+    # total = getTotalOwed(billing)
+    # content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
     recepients = json.loads(os.environ['GMAIL_RECEPIENTS'])  # pre-process recepients as it's an env-var list
     email_pass = os.getenv("GMAIL_PASS")
     sender = os.getenv("GMAIL_SEND_ADDRESS")
