@@ -1,14 +1,14 @@
+import os
 import smtplib
 from email.message import EmailMessage
 from process import process_billing_csv
 from dates import today
-from credentials import gmail_pass, gmail_recepients, gmail_send_address
 
 mostRecentData = process_billing_csv()
 textfile = rf"C:\Users\Jacob\Desktop\TutorsBilling\{mostRecentData}" 
-me = gmail_send_address
+me = os.getenv("GMAIL_SEND_ADDRESS")
 
-for recipient in gmail_recepients:
+for recipient in os.getenv("GMAIL_RECEPIENTS"):
     you = recipient  # Recipient's email address
 
     # Read the contents of your text file

@@ -1,4 +1,4 @@
-import credentials
+import os
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -40,7 +40,7 @@ def download_acuity_data():
     browser = Browser("C:\\Users\\Jacob\\Desktop\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe") # path to chromedriver
     browser.open_page("https://acuityscheduling.com/login.php?redirect=1")
     time.sleep(3)
-    browser.login_acuity(credentials.acuity_user, credentials.acuity_password) 
+    browser.login_acuity(os.getenv("ACUITY_USER"), os.getenv("ACUITY_PASSWORD")) 
     browser.click_button(By.CSS_SELECTOR, 'a[href="/reports.php"]')
     browser.click_button(By.CSS_SELECTOR, 'a[href="/reports.php?action=importexport"]')
     browser.add_input(By.ID, 'minDay-input', dates.start_date) # set this in dates.py
