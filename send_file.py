@@ -4,30 +4,33 @@ from email.message import EmailMessage
 from process import process_billing_csv
 from dates import today
 
-mostRecentData = process_billing_csv()
-textfile = rf"C:\Users\Jacob\Desktop\TutorsBilling\{mostRecentData}" 
-me = os.getenv("GMAIL_SEND_ADDRESS")
+# mostRecentData = process_billing_csv()
+# textfile = rf"C:\Users\Jacob\Desktop\TutorsBilling\{mostRecentData}" 
+# me = os.getenv("GMAIL_SEND_ADDRESS")
 
-for recipient in os.getenv("GMAIL_RECEPIENTS"):
-    you = recipient  # Recipient's email address
+def send_file(email_pass,sender,recepients,content_path):
 
-    # Read the contents of your text file
-    with open(textfile) as fp:
-        msg = EmailMessage()
-        msg.set_content(fp.read())
+    for recipient in recepients:
+        me = sender
+        you = recipient  # Recipient's email address
 
-    msg['Subject'] = f'Tutors Billing {today}'
-    msg['From'] = me
-    msg['To'] = you
+        # Read the contents of your text file
+        with open(content) as fp:
+            msg = EmailMessage()
+            msg.set_content(fp.read())
 
-    # Gmail SMTP server details
-    smtp_server = 'smtp.gmail.com'
-    smtp_port = 587  # Port for starttls
-    gmail_password = gmail_pass
+        msg['Subject'] = f'Tutors Billing {today}'
+        msg['From'] = me
+        msg['To'] = you
 
-    # Send the message via Gmail SMTP server
-    with smtplib.SMTP(smtp_server, smtp_port) as s:
-        s.starttls()  # Secure the connection
-        s.login(me, gmail_password)  # Login with your Gmail credentials
-        s.send_message(msg)  # Send the email
-        s.quit()  # Close the connection
+        # Gmail SMTP server details
+        smtp_server = 'smtp.gmail.com'
+        smtp_port = 587  # Port for starttls
+        gmail_password = email_pass
+
+        # Send the message via Gmail SMTP server
+        with smtplib.SMTP(smtp_server, smtp_port) as s:
+            s.starttls()  # Secure the connection
+            s.login(me, gmail_password)  # Login with your Gmail credentials
+            s.send_message(msg)  # Send the email
+            s.quit()  # Close the connection

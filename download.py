@@ -5,6 +5,16 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import dates
+from pathlib import Path
+
+def get_download_directory():
+    home = Path.home()
+    if os.name == 'nt':  # Windows
+        return home / 'Downloads'
+    elif os.name == 'posix':  # Linux and MacOS
+        return home / 'Downloads'
+    else:
+        raise NotImplementedError(f"Unsupported OS: {os.name}")
 
 class Browser:
     browser, service = None, None
@@ -37,7 +47,7 @@ class Browser:
         self.click_button(By.CSS_SELECTOR, "input#next-button[data-testid='next-button'][type='submit'][name='login'][value='Log in']")
 
 def download_acuity_data():
-    browser = Browser("C:\\Users\\Jacob\\Desktop\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe") # path to chromedriver
+    browser = Browser(os.getenv("CHROMEDRIVER_PATH")) # path to chromedriver
     browser.open_page("https://acuityscheduling.com/login.php?redirect=1")
     time.sleep(3)
     browser.login_acuity(os.getenv("ACUITY_USER"), os.getenv("ACUITY_PASSWORD")) 

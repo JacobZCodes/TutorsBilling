@@ -6,10 +6,13 @@ import dates
 from dates import convert_comma_date_to_slash_date, is_past_today
 from download import download_acuity_data
 import os
+from download import get_download_directory
+import json
+from send_file import send_file
 
 invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Diagnostic']
-destination = r"C:\Users\Jacob\Downloads" # processed info goes here
-download_directory = r"C:\Users\Jacob\Downloads" # default download location
+destination = get_download_directory()
+download_directory = get_download_directory()
 
 def clean_df(df):
     indices_to_drop = []
@@ -50,30 +53,31 @@ def generateTxt(fileName, destination, names, billing, total): # pretty write bi
             file.write(name + "\n")
             for session in billing[name]:
                 file.write(session[0] + " " + session[1] + "\n")
+    return (rf"{destination}\{fileName}")
 
 def process_billing_csv():
-    # download_acuity_data() # downloads billing CSV from Acuity
-    print(os.getenv("ACUITY_USER"))
-    print(os.getenv("ACUITY_PASSWORD"))
-    print(os.getenv("GMAIL_PASS"))
-    print(os.getenv("GMAIL_RECEPIENTS"))
-    print(os.getenv("GMAIL_SEND_ADDRESS"))
-    # csv_path = findMostRecentCSV(download_directory) 
-    # df_all = pd.read_csv(csv_path)
-    # df_not_paid = clean_df(df_all)
-    # billing = createBillingDict(df_not_paid)
-    # # Sort names alphabetically
-    # tempList = []
-    # for key in billing.keys():
-    #     tempList.append(key)
-    # sortedNames = sorted(tempList)
-    # fileName = csv_to_txt(csv_path) # schedule.txt
-    # total = getTotalOwed(billing)
-    # print(total)
-    # generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
-    # path = rf"{destination}\{fileName}"
-    # print(path)
-    # return path
+    download_acuity_data() # downloads billing CSV from Acuity
+    csv_path = findMostRecentCSV(download_directory) 
+    df_all = pd.read_csv(csv_path)
+    df_not_paid = clean_df(df_all)
+    billing = createBillingDict(df_not_paid)
+    # Sort names alphabetically
+    tempList = []
+    for key in billing.keys():
+        tempList.append(key)
+    sortedNames = sorted(tempList)
+    fileName = csv_to_txt(csv_path) # schedule.txt
+    total = getTotalOwed(billing)
+    content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
+    recepients = json.loads(os.environ['GMAIL_RECEPIENTS'])  # pre-process recepients as it's an env-var list
+    email_pass = os.getenv("GMAIL_PASS")
+    sender = os.getenv("GMAIL_SEND_ADDRESS")
+    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+
+
+    path = rf"{destination}\{fileName}"
+    
+    return path
 
 if __name__ == "__main__":
     process_billing_csv()
