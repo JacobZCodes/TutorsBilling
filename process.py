@@ -56,6 +56,7 @@ def generateTxt(fileName, destination, names, billing, total): # pretty write bi
     return (rf"{destination}\{fileName}")
 
 def process_billing_csv():
+    print("hello!")
     download_acuity_data() # downloads billing CSV from Acuity
     csv_path = findMostRecentCSV(download_directory) 
     df_all = pd.read_csv(csv_path)
