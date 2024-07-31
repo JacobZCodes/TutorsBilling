@@ -9,6 +9,11 @@ on:
       - main
 
 jobs:
+  get-secrets:
+    echo "Importing secrets..."
+    uses: .github\workflows\pass_secrets.yml
+    secrets: inherit
+
   build:
     runs-on: windows-latest
 
@@ -27,7 +32,7 @@ jobs:
       run:
         echo "Setting env variables"
       env:
-        ACUITY_PASSWORD: ${{ secrets.ACUITY_PASSWORD }}
+        ACUITY_PASSWORD: ${{ secrets.ACUITY_PASS }}
         ACUITY_USER: ${{ secrets.ACUITY_USER }}
         GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
         GMAIL_RECEPIENTS: ${{ secrets.GMAIL_RECEPIENTS }}
