@@ -16,10 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python 3.9
+    - name: Set up Python 3.12
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: '3.12'
 
     - name: Install dependencies
       run: pip install -r requirements.txt
@@ -39,6 +39,8 @@ jobs:
         ACUITY_PASSWORD: ${{ secrets.ACUITY_PASS }}
         ACUITY_USER: ${{ secrets.ACUITY_USER }}
         GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
-        GMAIL_RECEPIENTS: ${{ secrets.GMAIL_RECEPIENTS }}
+        GMAIL_RECEPIENT_1: ${{ secrets.GMAIL_RECEPIENT_1 }}
+        GMAIL_RECEPIENT_2: ${{ secrets.GMAIL_RECEPIENT_2 }}
+        GMAIL_RECEPIENT_3: ${{ secrets.GMAIL_RECEPIENT_3 }}
         GMAIL_SEND_ADDRESS: ${{ secrets.GMAIL_SEND_ADDRESS }}
       

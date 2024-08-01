@@ -1,4 +1,4 @@
 python-dateutil
 selenium
 pandas
-numpy==1.25.0
+numpy==2.0.1
