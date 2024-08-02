@@ -61,9 +61,9 @@ Here is the GitHub Actions workflow configuration that schedules the script to r
 
 
 ## Troubleshooting
-**Chromedriver Issues**: Ensure Chromedriver is compatible with your version of Chrome.
-**Data Extraction Errors**: Verify your Acuity credentials and the accessibility of the data.
-**Email Delivery Problems**: Check email configuration and recipient addresses.
+- **Chromedriver Issues**: Ensure Chromedriver is compatible with your version of Chrome.
+- **Data Extraction Errors**: Verify your Acuity credentials and the accessibility of the data.
+- **Email Delivery Problems**: Check email configuration and recipient addresses.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
