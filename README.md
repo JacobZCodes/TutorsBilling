@@ -51,8 +51,11 @@ Here is the GitHub Actions workflow configuration that schedules the script to r
 ![windows_build.yaml screen shot](screenshots/yaml-ss.png)
 
 ## Screenshots
+### Output of succesful build:
 ![successful build](screenshots/build_success.png)
+### Email received in inbox
 ![email in inbox](screenshots/inbox.png)
+### Email opened
 ![opened email](screenshots/email.png)
 
 
