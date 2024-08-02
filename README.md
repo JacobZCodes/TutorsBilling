@@ -48,11 +48,13 @@ The script `process.py` performs the following tasks:
 
 ## GitHub Actions Workflow
 Here is the GitHub Actions workflow configuration that schedules the script to run automatically:
-
+![windows_build.yaml screen shot](screenshots\yaml-ss.png)
 
 ## Screenshots
-output of yaml running
-dummy email goes here
+![successful build](screenshots\build_success.png)
+![email in inbox](screenshots\inbox.png)
+![opened email](screenshots\email.png)
+
 
 
 ## Troubleshooting

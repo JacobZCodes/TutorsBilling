@@ -26,11 +26,11 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
 
-    - name: Set up Chromedriver
-      uses: nanasess/setup-chromedriver@v2
+    - name: Set up Chromedriver 
+      uses: nanasess/setup-chromedriver@v2 # credit to https://github.com/nanasess/setup-chromedriver
 
     - name: Start Chromedriver
-      run: chromedriver --url-base=/wd/hub &
+      run: chromedriver --url-base=/wd/hub &  # credit to https://github.com/nanasess/setup-chromedriver
 
     - name: Run the script
       run: py process.py
