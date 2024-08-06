@@ -64,14 +64,14 @@ def getTotalOwed(billing):
             total += float(session[1])
     return total
 
-def generateTxt(fileName, destination, names, billing, total): # pretty write billing to a .txt
+def generateTxt(fileName, destination, names): # pretty write survey recepients to a .txt
     with open(rf"{destination}\{fileName}", "w") as file:
-        file.write(f"TOTAL - {total}\n")
-        for name in names: 
+        for name in names.keys(): # John_Smith: start date
+            firstName = name.split("_")[0]
+            lastName = name.split("_")[1]
+            sessionDate = names[name]
             file.write("\n")
-            file.write(name + "\n")
-            for session in billing[name]:
-                file.write(session[0] + " " + session[1] + "\n")
+            file.write(firstName + " " + lastName + sessionDate + "\n")
     return (rf"{destination}\{fileName}")
 
 def get_df_all():
@@ -166,28 +166,48 @@ def populate_startdate(datesDict):
     curr.close()
     conn.close()
 
-def check_for_new_clients():
+# Checks for new clients and writes them to a .txt; returns path to .txt
+def check_for_new_clients(csv_path):
     conn = psycopg2.connect(conn_string)
     curr = conn.cursor()
     
     curr.execute("""SELECT * FROM clients;""")
     records = curr.fetchall()
+    survey_recepients = {}
     for record in records:
         if is_new_client(record[5], dates.today) and record[6] == False: # Client needs to get a survey sent to them
-            
-
-    # conn.commit()
+            fullName = record[0] + "_" + record[1]
+            survey_recepients[fullName] = record[5] # John Smith:start date
+    fileName = csv_to_txt(csv_path) # schedule.txt
+    content_path = generateTxt(fileName=fileName, destination=destination, names=survey_recepients)
+    print(content_path)
+    return content_path
 
     curr.close()
     conn.close()
 
+# Emails .txt to supervisors
+def send_email_reminder(content_path):
+    recepients = [] # TO DO - READ IN ENV VARS AS LIST
+    recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
+    recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
+    recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
+    email_pass = os.getenv("GMAIL_PASS")
+    sender = os.getenv("GMAIL_SEND_ADDRESS")
+    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+
+
+
+# Updates AWS database with data from Acuity CSV and writes to .txt file people who need survey
 def update_database():
+    download_acuity_data()
     df_all = get_df_all()
     df_partial_clean = partial_clean_df(df_all)
     populate_first_last_email(df_partial_clean)
     populate_owes(df_all)
     populate_startdate(createDatesDict(df_partial_clean))
+    email_reminder_path = check_for_new_clients(findMostRecentCSV(download_directory))
+    send_email_reminder(email_reminder_path)
 
 if __name__ == "__main__":
-
-    check_for_new_clients()
+    update_database()
