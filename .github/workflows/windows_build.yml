@@ -1,12 +1,12 @@
-name: Windows Workflow
+name: Database Update and Survey Reminder
 
 on:
   push:
     branches:
-      - main
+      - dev
   pull_request:
     branches:
-      - main
+      - dev
   schedule:
     - cron: '0 16 * * 1'  # Runs every Monday at 10am Central Standard Time (CST)
 
