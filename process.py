@@ -16,13 +16,7 @@ invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Di
 destination = get_download_directory()
 download_directory = get_download_directory()
 
-dbname = credentials.db_name
-user = credentials.db_user
-password = credentials.db_pass# MOTHERFUCKA HIDE THIS SHIT!
-host = credentials.db_host
-port = '5432'
-
-conn_string = f"dbname={dbname} user={user} password={password} host={host} port={port}"
+conn_string = os.getenv("DB_CONN_STRING")
 
 def partial_clean_df(df): # remove people who are not getting tutored
     indices_to_drop = []
