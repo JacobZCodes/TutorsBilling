@@ -54,8 +54,7 @@ def createBillingDict(df):
 def getTotalOwed(billing):
     total = 0.0
     for value in billing.values():
-        for session in value:
-            total += float(session[1])
+        total += value
     return total
 
 def generateTxt(fileName, destination, names): # pretty write survey recepients to a .txt
@@ -179,19 +178,64 @@ WHERE %s = firstname AND %s = lastname
     curr.close()
     conn.close()
 
-# Emails .txt to supervisors
-def send_email_reminder(content_path):
-    recepients = [] # TO DO - READ IN ENV VARS AS LIST
-    recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
-    email_pass = os.getenv("GMAIL_PASS")
-    sender = os.getenv("GMAIL_SEND_ADDRESS")
-    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+# def sendBillingReminder(df_clean, csv_path):
+#     billing = createBillingDict(df_clean)
+#     # Sort names alphabetically
+#     tempList = []
+#     for key in billing.keys():
+#         tempList.append(key)
+#     sortedNames = sorted(tempList)
+#     fileName = csv_to_txt(csv_path) # schedule.txt
+#     total = getTotalOwed(billing)
+#     content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
+#     recepients = [] # TO DO - READ IN ENV VARS AS LIST
+#     recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
+#     recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
+#     recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
+#     email_pass = os.getenv("GMAIL_PASS")
+#     sender = os.getenv("GMAIL_SEND_ADDRESS")
+#     send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+
+def sendBillingReminder():
+    conn = psycopg2.connect(conn_string)
+    curr = conn.cursor()
+    
+    curr.execute("""SELECT * FROM clients;""")
+    records = curr.fetchall()
+    billing = {} # John Smith: total
+    for record in records:
+       if isinstance(record[4], int): # money is owed!
+           fullName = record[0] + "_" + record[1]
+           money_owed = record[4]
+           billing[fullName] = money_owed
+    # Sort names alphabetically
+    tempList = []
+    for key in billing.keys():
+        tempList.append(key)
+    sortedNames = sorted(tempList)
+    
+    # conn.commit()
+    curr.close()
+    conn.close()
+    
+
+    # fileName = csv_to_txt(csv_path) # schedule.txt
+    # total = getTotalOwed(billing)
+    # content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
+    # recepients = [] # TO DO - READ IN ENV VARS AS LIST
+    # recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
+    # recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
+    # recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
+    # email_pass = os.getenv("GMAIL_PASS")
+    # sender = os.getenv("GMAIL_SEND_ADDRESS")
+    # send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
 
 
+    # path = rf"{destination}\{fileName}"
+    
+    # return path
 
-# Updates AWS database with data from Acuity CSV
+# Updates AWS database with data from Acuity CSV -- run this daily
 def update_database():
     # download_acuity_data()
     df_all = get_df_all()
@@ -202,4 +246,5 @@ def update_database():
     populate_isnewclient()
 
 if __name__ == "__main__":
-    update_database()
+    # update_database()
+    sendBillingReminder()
