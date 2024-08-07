@@ -7,6 +7,7 @@ from dates import today
 # textfile = rf"C:\Users\Jacob\Desktop\TutorsBilling\{mostRecentData}" 
 # me = os.getenv("GMAIL_SEND_ADDRESS")
 
+#
 def send_file(email_pass,sender,recepients,content_path):
     for recipient in recepients:
         me = sender
