@@ -57,15 +57,15 @@ def getTotalOwed(billing):
         total += value
     return total
 
-def generateTxt(fileName, destination, names): # pretty write survey recepients to a .txt
-    with open(rf"{destination}\{fileName}", "w") as file:
-        for name in names.keys(): # John_Smith: start date
-            firstName = name.split("_")[0]
-            lastName = name.split("_")[1]
-            sessionDate = names[name]
+def generateTxt(filename, destination, names, billing, total): # pretty write billing to a .txt
+    with open(rf"{destination}/{filename}", "w") as file:
+        file.write(f"TOTAL - {total}\n")
+        for name in names: 
             file.write("\n")
-            file.write(firstName + " " + lastName + sessionDate + "\n")
-    return (rf"{destination}\{fileName}")
+            file.write(name + "\n")
+            for session in billing[name]:
+                file.write(session[0] + " " + session[1] + "\n")
+    return rf"{destination}/{filename}"
 
 def get_df_all():
     csv_path = findMostRecentCSV(download_directory) 
@@ -196,14 +196,14 @@ WHERE %s = firstname AND %s = lastname
 #     sender = os.getenv("GMAIL_SEND_ADDRESS")
 #     send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
 
-def sendBillingReminder():
+def sendBillingReminder(csv_path):
     conn = psycopg2.connect(conn_string)
     curr = conn.cursor()
     
     curr.execute("""SELECT * FROM clients;""")
     records = curr.fetchall()
     billing = {} # John Smith: total
-    for record in records:
+    for record in records: # Populate billing dict
        if isinstance(record[4], int): # money is owed!
            fullName = record[0] + "_" + record[1]
            money_owed = record[4]
@@ -213,38 +213,32 @@ def sendBillingReminder():
     for key in billing.keys():
         tempList.append(key)
     sortedNames = sorted(tempList)
-    
+    fileName = csv_to_txt(csv_path) # schedule.txt
+    total = getTotalOwed(billing)
+    content_path = generateTxt(filename=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
+    recepients = [] # TO DO - READ IN ENV VARS AS LIST
+    recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
+    recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
+    recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
+    email_pass = os.getenv("GMAIL_PASS")
+    sender = os.getenv("GMAIL_SEND_ADDRESS")
+    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
     # conn.commit()
     curr.close()
     conn.close()
-    
 
-    # fileName = csv_to_txt(csv_path) # schedule.txt
-    # total = getTotalOwed(billing)
-    # content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
-    # recepients = [] # TO DO - READ IN ENV VARS AS LIST
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
-    # email_pass = os.getenv("GMAIL_PASS")
-    # sender = os.getenv("GMAIL_SEND_ADDRESS")
-    # send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
-
-
-    # path = rf"{destination}\{fileName}"
-    
-    # return path
 
 # Updates AWS database with data from Acuity CSV -- run this daily
-def update_database():
+# def update_database():
     # download_acuity_data()
-    df_all = get_df_all()
-    df_partial_clean = partial_clean_df(df_all)
-    populate_first_last_email(df_partial_clean)
-    populate_owes(df_all)
-    populate_startdate(createDatesDict(df_partial_clean))   
-    populate_isnewclient()
+    # df_all = get_df_all()
+    # df_partial_clean = partial_clean_df(df_all)
+    # populate_first_last_email(df_partial_clean)
+    # populate_owes(df_all)
+    # populate_startdate(createDatesDict(df_partial_clean))   
+    # populate_isnewclient()
 
 if __name__ == "__main__":
     # update_database()
-    sendBillingReminder()
+    csv_path = findMostRecentCSV(download_directory)
+    sendBillingReminder(csv_path=csv_path)
