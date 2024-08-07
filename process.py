@@ -40,17 +40,20 @@ def clean_df(df): # remove people who have already paid and who are not getting 
             indices_to_drop.append(index)
     return df.drop(indices_to_drop)
 
+
 def createBillingDict(df):
     billing = {}
     for index, row in df.iterrows():
         fullName = row['First Name'] + "_" + row['Last Name']
-        amountOwed = row['Appointment Price']
+        amountOwed = str(row['Appointment Price'])
+        sessionDate = dates.convert_comma_date_to_slash_date(row['Start Time'].split()[0] + " " + row['Start Time'].split()[1] + row['Start Time'].split()[2])
         if (fullName not in billing.keys()):
-            billing[fullName] = amountOwed
+            billing[fullName] = [[sessionDate, amountOwed]]
         else:
-            billing[fullName] += amountOwed
+            billing[fullName].append([sessionDate, amountOwed])
     return billing
 
+# CHANGE ME TO getTotalOwed on main func
 def getTotalOwed(billing):
     total = 0.0
     for value in billing.values():
@@ -130,14 +133,17 @@ def populate_owes(df_all):
     df_clean = clean_df(df_all) # Create a separate df whose members include only people who OWE money
     billing = createBillingDict(df_clean)
     for key in billing.keys(): # Add to owes column
-        print(key)
-        lastName = key.split("_")[1]
         firstName = key.split("_")[0]
+        lastName = key.split("_")[1]
+        owesValue = ""
+        for value in billing[key]: # [session date, amount owed]
+            owesValue += str(value) + " ,"
+
         curr.execute(f"""
         UPDATE clients
         SET owes = %s
         WHERE firstName = %s AND lastName = %s;
-        """, (billing[key], firstName, lastName))
+        """, (owesValue, firstName, lastName))
     conn.commit()
 
     curr.close()
@@ -167,7 +173,7 @@ def populate_isnewclient():
     records = curr.fetchall()
     survey_recepients = {}
     for record in records:
-        if is_new_client(record[5], dates.today) and record[6] == False: # Last 15-30 days - change isnewclient to True
+        if is_new_client(record[3], dates.today):
             fullName = record[0] + "_" + record[1]
             curr.execute("""UPDATE clients
 SET isnewclient = TRUE
@@ -196,49 +202,20 @@ WHERE %s = firstname AND %s = lastname
 #     sender = os.getenv("GMAIL_SEND_ADDRESS")
 #     send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
 
-def sendBillingReminder(csv_path):
-    conn = psycopg2.connect(conn_string)
-    curr = conn.cursor()
-    
-    curr.execute("""SELECT * FROM clients;""")
-    records = curr.fetchall()
-    billing = {} # John Smith: total
-    for record in records: # Populate billing dict
-       if isinstance(record[4], int): # money is owed!
-           fullName = record[0] + "_" + record[1]
-           money_owed = record[4]
-           billing[fullName] = money_owed
-    # Sort names alphabetically
-    tempList = []
-    for key in billing.keys():
-        tempList.append(key)
-    sortedNames = sorted(tempList)
-    fileName = csv_to_txt(csv_path) # schedule.txt
-    total = getTotalOwed(billing)
-    content_path = generateTxt(filename=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
-    recepients = [] # TO DO - READ IN ENV VARS AS LIST
-    recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
-    email_pass = os.getenv("GMAIL_PASS")
-    sender = os.getenv("GMAIL_SEND_ADDRESS")
-    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
-    # conn.commit()
-    curr.close()
-    conn.close()
+
 
 
 # Updates AWS database with data from Acuity CSV -- run this daily
-# def update_database():
+def update_database():
     # download_acuity_data()
-    # df_all = get_df_all()
-    # df_partial_clean = partial_clean_df(df_all)
-    # populate_first_last_email(df_partial_clean)
-    # populate_owes(df_all)
-    # populate_startdate(createDatesDict(df_partial_clean))   
-    # populate_isnewclient()
+    df_all = get_df_all()
+    df_partial_clean = partial_clean_df(df_all)
+    populate_first_last_email(df_partial_clean)
+    populate_owes(df_all)
+    populate_startdate(createDatesDict(df_partial_clean))   
+    populate_isnewclient()
 
 if __name__ == "__main__":
-    # update_database()
-    csv_path = findMostRecentCSV(download_directory)
-    sendBillingReminder(csv_path=csv_path)
+    update_database()
+    # csv_path = findMostRecentCSV(download_directory)
+    # sendBillingReminder(csv_path=csv_path)
