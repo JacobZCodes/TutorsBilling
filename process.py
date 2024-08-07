@@ -15,7 +15,8 @@ invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Di
 destination = get_download_directory()
 download_directory = get_download_directory()
 
-conn_string = os.getenv("DB_CONN_STRING")
+conn_string = "postgresql://jacob:***REMOVED***@***REMOVED***:5432/***REMOVED***" # local testing
+# conn_string = os.getenv("DB_CONN_STRING") # remote deployment
 
 def partial_clean_df(df): # remove people who are not getting tutored
     indices_to_drop = []
@@ -159,8 +160,7 @@ def populate_startdate(datesDict):
     curr.close()
     conn.close()
 
-# Checks for new clients and writes them to a .txt; returns path to .txt
-def check_for_new_clients(csv_path):
+def populate_isnewclient():
     conn = psycopg2.connect(conn_string)
     curr = conn.cursor()
     
@@ -168,14 +168,14 @@ def check_for_new_clients(csv_path):
     records = curr.fetchall()
     survey_recepients = {}
     for record in records:
-        if is_new_client(record[5], dates.today) and record[6] == False: # Client needs to get a survey sent to them
+        if is_new_client(record[5], dates.today) and record[6] == False: # Last 15-30 days - change isnewclient to True
             fullName = record[0] + "_" + record[1]
-            survey_recepients[fullName] = record[5] # John Smith:start date
-    fileName = csv_to_txt(csv_path) # schedule.txt
-    content_path = generateTxt(fileName=fileName, destination=destination, names=survey_recepients)
-    print(content_path)
-    return content_path
+            curr.execute("""UPDATE clients
+SET isnewclient = TRUE
+WHERE %s = firstname AND %s = lastname
+""", (record[0], record[1]))
 
+    conn.commit()
     curr.close()
     conn.close()
 
@@ -191,16 +191,15 @@ def send_email_reminder(content_path):
 
 
 
-# Updates AWS database with data from Acuity CSV and writes to .txt file people who need survey
+# Updates AWS database with data from Acuity CSV
 def update_database():
-    download_acuity_data()
+    # download_acuity_data()
     df_all = get_df_all()
     df_partial_clean = partial_clean_df(df_all)
     populate_first_last_email(df_partial_clean)
     populate_owes(df_all)
-    populate_startdate(createDatesDict(df_partial_clean))
-    email_reminder_path = check_for_new_clients(findMostRecentCSV(download_directory))
-    send_email_reminder(email_reminder_path)
+    populate_startdate(createDatesDict(df_partial_clean))   
+    populate_isnewclient()
 
 if __name__ == "__main__":
     update_database()

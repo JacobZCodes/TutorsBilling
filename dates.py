@@ -3,7 +3,8 @@ from dateutil.relativedelta import relativedelta
 
 today = datetime.now().strftime("%m/%d/%Y")
 
-start_date = (datetime.now() - relativedelta(months=12)).strftime("%m/%d/%Y")
+# start_date = (datetime.now() - relativedelta(months=12)).strftime("%m/%d/%Y")
+start_date = '08/01/2023'
 
 month_dict = {
     "January": "01",
