@@ -45,6 +45,6 @@ jobs:
         GMAIL_RECEPIENT_2: ${{ secrets.GMAIL_RECEPIENT_2 }}
         GMAIL_RECEPIENT_3: ${{ secrets.GMAIL_RECEPIENT_3 }}
         GMAIL_SEND_ADDRESS: ${{ secrets.GMAIL_SEND_ADDRESS }}
-        DB_CONN_STRING = ${{  secrets.DB_CONN_STRING  }}
+        DB_CONN_STRING: ${{  secrets.DB_CONN_STRING  }}
 
       
