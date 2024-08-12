@@ -207,7 +207,7 @@ WHERE %s = firstname AND %s = lastname
 
 # Updates AWS database with data from Acuity CSV -- run this daily
 def update_database():
-    # download_acuity_data()
+    download_acuity_data()
     df_all = get_df_all()
     df_partial_clean = partial_clean_df(df_all)
     populate_first_last_email(df_partial_clean)
