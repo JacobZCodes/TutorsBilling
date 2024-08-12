@@ -16,7 +16,6 @@ invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Di
 destination = get_download_directory()
 download_directory = get_download_directory()
 # conn_string = os.getenv("DB_CONN_STRING") # remote deployment
-conn_string = "postgresql://jacob:***REMOVED***@***REMOVED***:5432/***REMOVED***" # local testing BRO DELETE ME BEFORE PUSHING!
 
 def clean_df(df):
     indices_to_drop = []
