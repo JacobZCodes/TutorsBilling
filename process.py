@@ -9,6 +9,7 @@ import os
 from download import get_download_directory
 import json
 from send_file import send_file
+import psycopg2
 
 invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Diagnostic']
 destination = get_download_directory()
@@ -55,8 +56,8 @@ def generateTxt(fileName, destination, names, billing, total): # pretty write bi
                 file.write(session[0] + " " + session[1] + "\n")
     return (rf"{destination}\{fileName}")
 
+# Processes data from owes column from AWS database and sends an email once a week 
 def process_billing_csv():
-    download_acuity_data() # downloads billing CSV from Acuity
     csv_path = findMostRecentCSV(download_directory) 
     df_all = pd.read_csv(csv_path)
     df_not_paid = clean_df(df_all)
