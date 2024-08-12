@@ -10,6 +10,7 @@ from download import get_download_directory
 import json
 from send_file import send_file
 import psycopg2
+import ast
 
 invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Diagnostic']
 destination = get_download_directory()
@@ -64,8 +65,15 @@ def process_billing_csv():
     curr = conn.cursor()       
     curr.execute("""SELECT * FROM clients WHERE owes IS NOT NULL;""")
     rows = curr.fetchall()
+    billing = {}
     for row in rows:
-        print(row[6])
+        fullName = row[0] + "_"  + row[1]
+        indebted_sessions_list = ast.literal_eval("[" + row[6] + "]")
+        billing[fullName] = indebted_sessions_list
+    for key in billing.keys():
+        print("KEY")
+        for date in billing[key]:
+            print(date)
     
     # billing = createBillingDict(df_not_paid)
     # # Sort names alphabetically
