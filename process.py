@@ -14,6 +14,8 @@ import psycopg2
 invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Diagnostic']
 destination = get_download_directory()
 download_directory = get_download_directory()
+# conn_string = os.getenv("DB_CONN_STRING") # remote deployment
+conn_string = "postgresql://jacob:***REMOVED***@***REMOVED***:5432/***REMOVED***" # local testing BRO DELETE ME BEFORE PUSHING!
 
 def clean_df(df):
     indices_to_drop = []
@@ -58,30 +60,34 @@ def generateTxt(fileName, destination, names, billing, total): # pretty write bi
 
 # Processes data from owes column from AWS database and sends an email once a week 
 def process_billing_csv():
-    csv_path = findMostRecentCSV(download_directory) 
-    df_all = pd.read_csv(csv_path)
-    df_not_paid = clean_df(df_all)
-    billing = createBillingDict(df_not_paid)
-    # Sort names alphabetically
-    tempList = []
-    for key in billing.keys():
-        tempList.append(key)
-    sortedNames = sorted(tempList)
-    fileName = csv_to_txt(csv_path) # schedule.txt
-    total = getTotalOwed(billing)
-    content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
-    recepients = [] # TO DO - READ IN ENV VARS AS LIST
-    recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
-    email_pass = os.getenv("GMAIL_PASS")
-    sender = os.getenv("GMAIL_SEND_ADDRESS")
-    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
-
-
-    path = rf"{destination}\{fileName}"
+    conn = psycopg2.connect(conn_string)
+    curr = conn.cursor()       
+    curr.execute("""SELECT * FROM clients WHERE owes IS NOT NULL;""")
+    rows = curr.fetchall()
+    for row in rows:
+        print(row[6])
     
-    return path
+    # billing = createBillingDict(df_not_paid)
+    # # Sort names alphabetically
+    # tempList = []
+    # for key in billing.keys():
+    #     tempList.append(key)
+    # sortedNames = sorted(tempList)
+    # fileName = csv_to_txt(csv_path) # schedule.txt
+    # total = getTotalOwed(billing)
+    # content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
+    # recepients = [] # TO DO - READ IN ENV VARS AS LIST
+    # recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
+    # recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
+    # recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
+    # email_pass = os.getenv("GMAIL_PASS")
+    # sender = os.getenv("GMAIL_SEND_ADDRESS")
+    # send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+
+
+    # path = rf"{destination}\{fileName}"
+    
+    # return path
 
 if __name__ == "__main__":
     process_billing_csv()
