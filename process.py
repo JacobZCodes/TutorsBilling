@@ -44,8 +44,8 @@ def sortBillingKeys(billing):
     sortedNames = sorted(tempList)
     return sortedNames
 
-# Read data from owes column from AWS database and sends an email once a week 
-def read_and_send_debt_data():
+# Checks at EOD every day and sends survey email
+def send_survey():
     conn = psycopg2.connect (
     dbname= os.getenv("DB_NAME"),
     user=os.getenv("DB_USER"),
@@ -54,7 +54,7 @@ def read_and_send_debt_data():
     port='5432' 
     )
     curr = conn.cursor()       
-    curr.execute("""SELECT * FROM clients WHERE owes IS NOT NULL;""")
+    curr.execute("SELECT * FROM clients WHERE isnewclient = TRUE AND receivedsurvey = FALSE;")
     rows = curr.fetchall()
     billing = {}
     for row in rows:
