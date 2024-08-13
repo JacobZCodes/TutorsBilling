@@ -15,7 +15,7 @@ invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Di
 destination = get_download_directory()
 download_directory = get_download_directory()
 
-conn_string = os.getenv("DB_CONN_STRING") # remote deployment
+
 
 def partial_clean_df(df): # remove people who are not getting tutored
     indices_to_drop = []
@@ -93,7 +93,13 @@ def createDatesDict(df_partial_clean):
 def populate_first_last_email(df_partial_clean):
     clientNames = []
     # download_acuity_data() # downloads billing CSV from Acuity
-    conn = psycopg2.connect(conn_string)
+    conn = psycopg2.connect (
+    dbname= os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    host=os.getenv("DB_ENDPOINT"),
+    port='5432' 
+    )
     curr = conn.cursor()    
 
 
@@ -127,7 +133,13 @@ def populate_first_last_email(df_partial_clean):
     return clientNames
 
 def populate_owes(df_all):
-    conn = psycopg2.connect(conn_string)
+    conn = psycopg2.connect (
+    dbname= os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    host=os.getenv("DB_ENDPOINT"),
+    port='5432' 
+    )
     curr = conn.cursor()    
     df_clean = clean_df(df_all) # Create a separate df whose members include only people who OWE money
     billing = createBillingDict(df_clean)
@@ -149,7 +161,13 @@ def populate_owes(df_all):
     conn.close()
 
 def populate_startdate(datesDict):
-    conn = psycopg2.connect(conn_string)
+    conn = psycopg2.connect (
+    dbname= os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    host=os.getenv("DB_ENDPOINT"),
+    port='5432' 
+    )
     curr = conn.cursor()    
     # code goes here
     for key in datesDict.keys():
@@ -165,7 +183,13 @@ def populate_startdate(datesDict):
     conn.close()
 
 def populate_isnewclient():
-    conn = psycopg2.connect(conn_string)
+    conn = psycopg2.connect (
+    dbname= os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    host=os.getenv("DB_ENDPOINT"),
+    port='5432' 
+    )
     curr = conn.cursor()
     
     curr.execute("""SELECT * FROM clients;""")
