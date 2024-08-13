@@ -72,6 +72,8 @@ def read_and_send_debt_data():
     email_pass = os.getenv("GMAIL_PASS")
     sender = os.getenv("GMAIL_SEND_ADDRESS")
     send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+    curr.close()
+    conn.close()
 
 
 if __name__ == "__main__":
