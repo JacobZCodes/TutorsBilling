@@ -54,18 +54,26 @@ def send_survey():
     rows = curr.fetchall()
     email = {}
     for row in rows:
+        # REMOVE DEMO SHOWING THIS IS ACCURATE
+        print(row)
         email[row[0] + "_" + row[1]] = row[2] 
-    # Add recepients
+    # REMOVE PRUNING OF FARIS
+    for name in email.keys():
+        if name != "Fairs_Haykal":
+            del email[name]
+    print(email)
+
+    # REMOVE - ADD STAFF RECEPIENTS
     recepients = [] 
     recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
     recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_3")) # keep these for now; staff don't need to receive surveys
+    recepients.append(os.getenv("GMAIL_RECEPIENT_3")) 
 
     email_pass = os.getenv("GMAIL_SURVEY_SENDER_PASS")
     sender = os.getenv("GMAIL_SURVEY_SENDER")
     # send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
 
-    # Change receivedsurvey to TRUE
+    # CHANGE RECEIVEDSURVEY TO BE TRUE
 
 
     conn.commit()
@@ -75,5 +83,3 @@ def send_survey():
 
 if __name__ == "__main__":
     send_survey()
-    # CHANGE LOCAL VAR BACK TO HIDDEN VAR
-    # PRUNE JUST FOR FARIS FOR TESTING
