@@ -44,22 +44,31 @@ def createBillingDict(df):
 def getTotalOwed(billing):
     total = 0.0
     for value in billing.values():
-        for session in value:
-            total += float(session[1])
+        for sessionOwePair in value:
+            total += float(sessionOwePair[1])
+    print(total)
     return total
 
-def generateTxt(fileName, destination, names, billing, total): # pretty write billing to a .txt
-    with open(rf"{destination}\{fileName}", "w") as file:
-        file.write(f"TOTAL - {total}\n")
-        for name in names: 
+def generateTxt(destination, sortedNames, billing): # pretty write billing to a .txt
+    with open(rf"{destination}\email.txt", "w") as file:
+        file.write(f"TOTAL - {getTotalOwed(billing=billing)}\n")
+        for name in sortedNames: 
             file.write("\n")
-            file.write(name + "\n")
-            for session in billing[name]:
-                file.write(session[0] + " " + session[1] + "\n")
-    return (rf"{destination}\{fileName}")
+            file.write(name.replace("_", " ") + "\n")
+            for sessionOwePair in billing[name]:
+                file.write(sessionOwePair[0] + " " + sessionOwePair[1] + "\n")
+    return (rf"{destination}\email.txt")
 
-# Processes data from owes column from AWS database and sends an email once a week 
-def process_billing_csv():
+# Alphabetically
+def sortBillingKeys(billing):
+    tempList = []
+    for key in billing.keys():
+        tempList.append(key)
+    sortedNames = sorted(tempList)
+    return sortedNames
+
+# Read data from owes column from AWS database and sends an email once a week 
+def read_and_send_debt_data():
     conn = psycopg2.connect(conn_string)
     curr = conn.cursor()       
     curr.execute("""SELECT * FROM clients WHERE owes IS NOT NULL;""")
@@ -69,32 +78,18 @@ def process_billing_csv():
         fullName = row[0] + "_"  + row[1]
         indebted_sessions_list = ast.literal_eval("[" + row[6] + "]")
         billing[fullName] = indebted_sessions_list
-    for key in billing.keys():
-        print("KEY")
-        for date in billing[key]:
-            print(date)
     
-    # billing = createBillingDict(df_not_paid)
-    # # Sort names alphabetically
-    # tempList = []
-    # for key in billing.keys():
-    #     tempList.append(key)
-    # sortedNames = sorted(tempList)
-    # fileName = csv_to_txt(csv_path) # schedule.txt
-    # total = getTotalOwed(billing)
-    # content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
-    # recepients = [] # TO DO - READ IN ENV VARS AS LIST
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
-    # email_pass = os.getenv("GMAIL_PASS")
-    # sender = os.getenv("GMAIL_SEND_ADDRESS")
-    # send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+    sortedNames = sortBillingKeys(billing=billing)
+    total = getTotalOwed(billing)
+    content_path  = generateTxt(destination=destination, sortedNames=sortedNames, billing=billing)
+    recepients = [] # TO DO - READ IN ENV VARS AS LIST
+    recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
+    recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
+    recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
+    email_pass = os.getenv("GMAIL_PASS")
+    sender = os.getenv("GMAIL_SEND_ADDRESS")
+    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
 
-
-    # path = rf"{destination}\{fileName}"
-    
-    # return path
 
 if __name__ == "__main__":
-    process_billing_csv()
+    read_and_send_debt_data()
