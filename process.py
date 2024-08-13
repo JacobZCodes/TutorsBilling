@@ -61,7 +61,6 @@ def send_survey():
     # REMOVE PRUNING OF FARIS
     namesToRemove = []
     for name in email.keys():
-        print(f"Loop, name is {name}")
         if name != "***REMOVED***":
             namesToRemove.append(name)
     for name in namesToRemove:
@@ -74,14 +73,23 @@ def send_survey():
     recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
     recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
     recepients.append(os.getenv("GMAIL_RECEPIENT_3")) 
+    # KEEP - ADD CLIENT RECEPIENTS
+    for recepient in email.keys():
+        recepients.append(email[recepient])
 
     email_pass = os.getenv("GMAIL_SURVEY_SENDER_PASS")
     sender = os.getenv("GMAIL_SURVEY_SENDER")
-    # send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
 
     # CHANGE RECEIVEDSURVEY TO BE TRUE
-
-
+    for recepient in email.keys():
+        firstName = recepient.split("_")[0]
+        lastName = recepient.split("_")[1]
+        curr.execute(f"""
+        UPDATE clients
+        SET receivedsurvey = TRUE
+        WHERE firstName = %s AND lastName = %s;
+        """, (firstName, lastName))
     conn.commit()
     curr.close()
     conn.close()
