@@ -57,13 +57,12 @@ def send_survey():
         # REMOVE DEMO SHOWING THIS IS ACCURATE
         print(row)
         email[row[0] + "_" + row[1]] = row[2] 
-    print("printing emails....\n")
-    print(email)
 
     # REMOVE PRUNING OF FARIS
     namesToRemove = []
     for name in email.keys():
-        if name != "Fairs_Haykal":
+        print(f"Loop, name is {name}")
+        if name != "***REMOVED***":
             namesToRemove.append(name)
     for name in namesToRemove:
         del email[name]
