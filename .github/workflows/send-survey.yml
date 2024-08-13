@@ -3,10 +3,10 @@ name: Send Survey
 on:
   push:
     branches:
-      - main
+      - send-survey
   pull_request:
     branches:
-      - main
+      - send-survey
   schedule:
     - cron: '0 16 * * 1'  # Runs every Monday at 10am Central Standard Time (CST)
 
