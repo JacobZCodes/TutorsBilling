@@ -58,9 +58,12 @@ def send_survey():
         print(row)
         email[row[0] + "_" + row[1]] = row[2] 
     # REMOVE PRUNING OF FARIS
+    namesToRemove = []
     for name in email.keys():
         if name != "Fairs_Haykal":
-            del email[name]
+            namesToRemove.append(name)
+    for name in namesToRemove:
+        del email[name]
     print(email)
 
     # REMOVE - ADD STAFF RECEPIENTS
