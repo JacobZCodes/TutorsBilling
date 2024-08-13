@@ -28,8 +28,8 @@ def getTotalOwed(billing):
 
 def generateTxt(destination): # pretty write billing to a .txt
     with open(rf"{destination}\email.txt", "w") as file:
-        file.write(f"Hello, thank you for recently joining us at The Tutors! We hope that you have found our services helpful, and we'd appreciate
-        your honest feedback on our survey; it shouldn't take more than five minutes. We look forward to meeting with you again!\n")
+        file.write("""Hello, thank you for recently joining us at The Tutors! We hope that you have found our services helpful, and we'd appreciate
+        your honest feedback on our survey; it shouldn't take more than five minutes. We look forward to meeting with you again!\n""")
     return (rf"{destination}\email.txt")
 
 # Alphabetically
