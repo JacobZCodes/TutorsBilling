@@ -1,4 +1,4 @@
-name: Data Call And Send
+name: Send Survey
 
 on:
   push:
@@ -38,7 +38,8 @@ jobs:
         GMAIL_RECEPIENT_1: ${{ secrets.GMAIL_RECEPIENT_1 }}
         GMAIL_RECEPIENT_2: ${{ secrets.GMAIL_RECEPIENT_2 }}
         GMAIL_RECEPIENT_3: ${{ secrets.GMAIL_RECEPIENT_3 }}
-        GMAIL_SEND_ADDRESS: ${{ secrets.GMAIL_SEND_ADDRESS }}
+        GMAIL_SURVEY_SENDER: ${{ secrets.GMAIL_SURVEY_SENDER}}
+        GMAIL_SURVEY_SENDER_PASS: ${{ secrets.GMAIL_SURVEY_SENDER_PASS}}
         DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
         DB_NAME: ${{ secrets.DB_NAME }}
         DB_PASS: ${{ secrets.DB_PASS }}
