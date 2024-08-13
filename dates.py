@@ -38,18 +38,18 @@ def is_past_today(slash_date_current, slash_date_today):
     else:
         return False # date is today or in the past
 
-def is_new_client(slash_date_current, slash_date_today): # 15 - 30 days
+def is_new_client(slash_date_current, slash_date_today): # within the past 30 days
     date_current = datetime.strptime(slash_date_current, '%m/%d/%Y')
     date_today = datetime.strptime(slash_date_today, '%m/%d/%Y')
     
     # Calculate the difference in days
     difference = (date_today - date_current).days
     
-    # Check if the difference is between 15 and 30 days
-    if 15 <= difference <= 30:
-        return True # start date is between 15 and 30 days ago
+    # Check if the difference is within the past 30 days
+    if difference <= 30:
+        return True # start date is within the past 30 days
     else:
-        return False # start date is not in the specified range
+        return False # start date is not within the past 30 days
 
 
 # print(is_new_client('07/15/2023', '08/05/2023')) # Should return True
