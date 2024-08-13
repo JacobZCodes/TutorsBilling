@@ -65,7 +65,7 @@ def read_and_send_debt_data():
     
     sortedNames = sortBillingKeys(billing=billing)
     total = getTotalOwed(billing)
-    content_path  = generateTxt(destination=destination, sortedNames=sortedNames, billing=billing)
+    content_path  = generateTxt(destination=get_download_directory(), sortedNames=sortedNames, billing=billing)
     recepients = [] # TO DO - READ IN ENV VARS AS LIST
     recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
     recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
