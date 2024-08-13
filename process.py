@@ -79,7 +79,7 @@ def send_survey():
 
     email_pass = os.getenv("GMAIL_SURVEY_SENDER_PASS")
     sender = os.getenv("GMAIL_SURVEY_SENDER")
-    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
+    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=generateTxt(get_download_directory()))
 
     # CHANGE RECEIVEDSURVEY TO BE TRUE
     for recepient in email.keys():
