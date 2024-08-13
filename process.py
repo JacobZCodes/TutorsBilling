@@ -42,14 +42,13 @@ def sortBillingKeys(billing):
 
 # Checks at EOD every day and sends survey email
 def send_survey():
-    # conn = psycopg2.connect (
-    # dbname= os.getenv("DB_NAME"),
-    # user=os.getenv("DB_USER"),
-    # password=os.getenv("DB_PASS"),
-    # host=os.getenv("DB_ENDPOINT"),
-    # port='5432' 
-    # )
-    conn = psycopg2.connect("postgresql://jacob:***REMOVED***@***REMOVED***:5432/***REMOVED***")
+    conn = psycopg2.connect (
+    dbname= os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    host=os.getenv("DB_ENDPOINT"),
+    port='5432' 
+    )
     curr = conn.cursor()       
     curr.execute("SELECT * FROM clients WHERE isnewclient = TRUE AND receivedsurvey = FALSE;")
     rows = curr.fetchall()
@@ -67,7 +66,7 @@ def send_survey():
     # send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
 
     # Change receivedsurvey to TRUE
-    
+
 
     conn.commit()
     curr.close()
