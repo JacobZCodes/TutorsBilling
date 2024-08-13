@@ -24,7 +24,6 @@ def getTotalOwed(billing):
     for value in billing.values():
         for sessionOwePair in value:
             total += float(sessionOwePair[1])
-    print(total)
     return total
 
 def generateTxt(destination, sortedNames, billing): # pretty write billing to a .txt
