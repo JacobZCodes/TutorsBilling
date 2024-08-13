@@ -204,7 +204,7 @@ WHERE %s = firstname AND %s = lastname
 
 
 
-# Updates AWS database with data from Acuity CSV -- run this daily
+# Updates AWS database with data from Acuity CSV -- run this hourly
 def update_database():
     download_acuity_data()
     df_all = get_df_all()
