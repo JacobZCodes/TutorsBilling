@@ -8,7 +8,7 @@ on:
     branches:
       - dev
   schedule:
-    - cron: '0 * * * *' # runs hourly
+    - cron: '0 0-23 * * *' # runs hourly
 
 jobs:
   build:
