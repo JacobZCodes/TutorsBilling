@@ -17,7 +17,7 @@ def send_file(email_pass,sender,recepients,content_path):
             msg = EmailMessage()
             msg.set_content(fp.read())
 
-        msg['Subject'] = f'Tutors Billing {today}'
+        msg['Subject'] = f'New Student Survey!'
         msg['From'] = me
         msg['To'] = you
 
@@ -29,6 +29,7 @@ def send_file(email_pass,sender,recepients,content_path):
         # Send the message via Gmail SMTP server
         with smtplib.SMTP(smtp_server, smtp_port) as s:
             s.starttls()  # Secure the connection
+            print(me, gmail_password)
             s.login(me, gmail_password)  # Login with your Gmail credentials
             s.send_message(msg)  # Send the email
             s.quit()  # Close the connection
