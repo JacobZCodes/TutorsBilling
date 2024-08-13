@@ -1,4 +1,4 @@
-name: Windows Workflow
+name: Data Call And Send
 
 on:
   push:
@@ -25,13 +25,7 @@ jobs:
 
     - name: Install dependencies
       run: pip install -r requirements.txt
-
-    - name: Set up Chromedriver 
-      uses: nanasess/setup-chromedriver@v2 # credit to https://github.com/nanasess/setup-chromedriver
-
-    - name: Start Chromedriver
-      run: chromedriver --url-base=/wd/hub &  # credit to https://github.com/nanasess/setup-chromedriver
-
+    
     - name: Run the script
       run: py process.py
       env:
@@ -45,4 +39,7 @@ jobs:
         GMAIL_RECEPIENT_2: ${{ secrets.GMAIL_RECEPIENT_2 }}
         GMAIL_RECEPIENT_3: ${{ secrets.GMAIL_RECEPIENT_3 }}
         GMAIL_SEND_ADDRESS: ${{ secrets.GMAIL_SEND_ADDRESS }}
-      
+        DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_PASS: ${{ secrets.DB_PASS }}
+        DB_USER: ${{ secrets.DB_USER }}      

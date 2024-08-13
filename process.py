@@ -1,33 +1,11 @@
-import numpy as np
-import pandas as pd
-import download
-from CSV import findMostRecentCSV, csv_to_txt
 import dates
 from dates import convert_comma_date_to_slash_date, is_past_today
-from download import download_acuity_data
 import os
 from download import get_download_directory
 import json
 from send_file import send_file
 import psycopg2
 import ast
-
-invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Diagnostic']
-destination = get_download_directory()
-download_directory = get_download_directory()
-conn_string = os.getenv("DB_CONN_STRING") # remote deployment
-
-def clean_df(df):
-    indices_to_drop = []
-    for index, row in df.iterrows():
-        curr_date = convert_comma_date_to_slash_date((row['Start Time'].split()[0] + " " + row['Start Time'].split()[1] + row['Start Time'].split()[2]))
-        if row['Paid?'] == 'yes': # remove people who have already paid
-            indices_to_drop.append(index)
-        if row['Type'] in invalid_meeting_types: # remove people who are not getting tutored
-            indices_to_drop.append(index)
-        if is_past_today(curr_date, dates.today): # Acuity bug - grabs more dates than I want, so remove all rows whose dates are past today's date
-            indices_to_drop.append(index)
-    return df.drop(indices_to_drop)
 
 def createBillingDict(df):
     billing = {}
@@ -69,7 +47,13 @@ def sortBillingKeys(billing):
 
 # Read data from owes column from AWS database and sends an email once a week 
 def read_and_send_debt_data():
-    conn = psycopg2.connect(conn_string)
+    conn = psycopg2.connect (
+    dbname= os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    host=os.getenv("DB_ENDPOINT"),
+    port='5432' 
+    )
     curr = conn.cursor()       
     curr.execute("""SELECT * FROM clients WHERE owes IS NOT NULL;""")
     rows = curr.fetchall()
