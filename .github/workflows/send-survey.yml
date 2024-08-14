@@ -8,8 +8,8 @@ on:
   #   branches:
   #     - send-survey
   workflow_dispatch: # Allows for manual triggering
-  schedule:
-      - cron: '0 17 * * *'  # Runs every day at 5pm Central Standard Time (CST)
+  # schedule:
+  #     - cron: '0 17 * * *'  # Runs every day at 5pm Central Standard Time (CST)
 
 jobs:
   build:
@@ -30,15 +30,6 @@ jobs:
     - name: Run the script
       run: py main.py
       env:
-        ACTIONS_RUNNER_DEBUG: true
-        ACTIONS_STEP_DEBUG: true
-        ACUITY_PASSWORD: ${{ secrets.ACUITY_PASS }}
-        ACUITY_USER: ${{ secrets.ACUITY_USER }}
-        GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
-        GMAIL_RECEPIENT_0: ${{ secrets.GMAIL_RECEPIENT_0}}
-        GMAIL_RECEPIENT_1: ${{ secrets.GMAIL_RECEPIENT_1 }}
-        GMAIL_RECEPIENT_2: ${{ secrets.GMAIL_RECEPIENT_2 }}
-        GMAIL_RECEPIENT_3: ${{ secrets.GMAIL_RECEPIENT_3 }}
         GMAIL_SURVEY_SENDER: ${{ secrets.GMAIL_SURVEY_SENDER}}
         GMAIL_SURVEY_SENDER_PASS: ${{ secrets.GMAIL_SURVEY_SENDER_PASS}}
         DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}

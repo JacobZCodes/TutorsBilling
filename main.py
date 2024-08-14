@@ -35,15 +35,13 @@ def send_survey():
     curr = conn.cursor()       
     curr.execute("SELECT * FROM clients WHERE isnewclient = TRUE AND receivedsurvey = FALSE;")
     rows = curr.fetchall()
-    # REMOVE SHOWING WHO IS VALID RECEPIENT
-    for row in rows:
-        print(row)
     # POPULATE EMAIL DICT 
     addresses = {}
     for row in rows:
         name = row[0] + "_" + row[1]
         email_address = row[2]
         addresses[name] = email_address
+
     # REMOVE PRUNING OF FARIS
     namesToRemove = []
     for name in addresses.keys():
@@ -51,21 +49,11 @@ def send_survey():
             namesToRemove.append(name)
     for name in namesToRemove:
         del addresses[name]
-    print("printing pruned emails..\n")
-    print(addresses)
 
-    # REMOVE - ADD STAFF RECEPIENTS FOR TESTING
     recepients = []
-    recepients.append(os.getenv("GMAIL_RECEPIENT_0"))
-
     # KEEP - ADD CLIENT RECEPIENTS
     for recepient in addresses.keys():
         recepients.append(addresses[recepient])
-
-    # REMOVE - SHOW RECEPIENTS
-    print("Recepients:")
-    for recepient in recepients:
-        print(recepient)
     
     email_pass = os.getenv("GMAIL_SURVEY_SENDER_PASS")
     sender = os.getenv("GMAIL_SURVEY_SENDER")
