@@ -15,7 +15,7 @@ def get_download_directory():
         raise NotImplementedError(f"Unsupported OS: {os.name}")
 
 def generateTxt(destination): # pretty write generic survey reminder as a .txt
-    survey_url = "https://youtube.com/" # CHANGE ME
+    survey_url = os.getenv("NEW_STUDENT_SURVEY_LINK")
 
     # Write the email content with a hyperlink
     with open(rf"{destination}\email.txt", "w") as file:
@@ -42,15 +42,16 @@ def send_survey():
         email_address = row[2]
         addresses[name] = email_address
 
-    # REMOVE PRUNING OF FARIS
+    # REMOVE PRUNING OF FARIS AND JACOB
+    recepients = []
     namesToRemove = []
     for name in addresses.keys():
         if name != "***REMOVED***":
             namesToRemove.append(name)
     for name in namesToRemove:
         del addresses[name]
-
-    recepients = []
+    recepients[os.getenv("GMAIL_RECEPIENT_0")]
+    
     # KEEP - ADD CLIENT RECEPIENTS
     for recepient in addresses.keys():
         recepients.append(addresses[recepient])
