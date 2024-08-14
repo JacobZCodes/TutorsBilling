@@ -1,21 +1,45 @@
 import numpy as np
 import pandas as pd
 import psycopg2
-import download
-from CSV import findMostRecentCSV, csv_to_txt
-import dates
-from dates import convert_comma_date_to_slash_date, is_past_today, is_new_client
-from download import download_acuity_data
 import os
-from download import get_download_directory
-import json
-from send_file import send_file
+import dates
+import subprocess
+from dates import convert_comma_date_to_slash_date, is_past_today, is_new_client
+from webdriver import download_acuity_data, get_download_directory
+from pathlib import Path
+
+def findMostRecentCSV(directory): # Returns path to most recently created CSV
+    command = ["powershell", "-Command", f"""Get-ChildItem -Path "{directory}" -Filter *.csv | Sort-Object CreationTime | Select-Object Name, CreationTime"""]
+    result = subprocess.run(command, capture_output=True, text=True)
+    command_output = result.stdout.strip().split()
+
+
+    curr_csv_index = -1
+    for index, item in enumerate(command_output):
+        if (".csv" in item):
+            curr_csv_index = index
+
+    # Windows, if we have duplicate files we either have 'schedule2024-07-28', '(4).csv' [duplicate] or 'schedule2024-07-28.scv' [unique file]
+    if ("(" in command_output[curr_csv_index]):
+        csv = command_output[curr_csv_index - 1] + " " + command_output[curr_csv_index]
+    else:
+        csv = command_output[curr_csv_index] 
+    
+    path = directory + rf"\{csv}"
+    return path 
+
+def get_download_directory():
+    home = Path.home()
+    if os.name == 'nt':  # Windows
+        return str(home / 'Downloads')
+    elif os.name == 'posix':  # Linux and MacOS
+        return str(home / 'Downloads')
+    else:
+        raise NotImplementedError(f"Unsupported OS: {os.name}")
 
 invalid_meeting_types = ['Short Meeting', 'Meeting', 'Business Meeting', 'ACT Diagnostic']
 destination = get_download_directory()
 download_directory = get_download_directory()
-
-
 
 def partial_clean_df(df): # remove people who are not getting tutored
     indices_to_drop = []
@@ -39,7 +63,6 @@ def clean_df(df): # remove people who have already paid and who are not getting 
             indices_to_drop.append(index)
     return df.drop(indices_to_drop)
 
-
 def createBillingDict(df):
     billing = {}
     for index, row in df.iterrows():
@@ -51,23 +74,6 @@ def createBillingDict(df):
         else:
             billing[fullName].append([sessionDate, amountOwed])
     return billing
-
-# CHANGE ME TO getTotalOwed on main func
-def getTotalOwed(billing):
-    total = 0.0
-    for value in billing.values():
-        total += value
-    return total
-
-def generateTxt(filename, destination, names, billing, total): # pretty write billing to a .txt
-    with open(rf"{destination}/{filename}", "w") as file:
-        file.write(f"TOTAL - {total}\n")
-        for name in names: 
-            file.write("\n")
-            file.write(name + "\n")
-            for session in billing[name]:
-                file.write(session[0] + " " + session[1] + "\n")
-    return rf"{destination}/{filename}"
 
 def get_df_all():
     csv_path = findMostRecentCSV(download_directory) 
@@ -92,7 +98,6 @@ def createDatesDict(df_partial_clean):
 # Populates a first,last,email columns and returns a list of client first last names
 def populate_first_last_email(df_partial_clean):
     clientNames = []
-    # download_acuity_data() # downloads billing CSV from Acuity
     conn = psycopg2.connect (
     dbname= os.getenv("DB_NAME"),
     user=os.getenv("DB_USER"),
@@ -169,7 +174,6 @@ def populate_startdate(datesDict):
     port='5432' 
     )
     curr = conn.cursor()    
-    # code goes here
     for key in datesDict.keys():
         firstName = key.split("_")[0]
         lastName = key.split("_")[1]
@@ -207,27 +211,6 @@ WHERE %s = firstname AND %s = lastname
     curr.close()
     conn.close()
 
-# def sendBillingReminder(df_clean, csv_path):
-#     billing = createBillingDict(df_clean)
-#     # Sort names alphabetically
-#     tempList = []
-#     for key in billing.keys():
-#         tempList.append(key)
-#     sortedNames = sorted(tempList)
-#     fileName = csv_to_txt(csv_path) # schedule.txt
-#     total = getTotalOwed(billing)
-#     content_path = generateTxt(fileName=fileName, destination=destination, names=sortedNames, billing=billing, total=total)
-#     recepients = [] # TO DO - READ IN ENV VARS AS LIST
-#     recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
-#     recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-#     recepients.append(os.getenv("GMAIL_RECEPIENT_3"))
-#     email_pass = os.getenv("GMAIL_PASS")
-#     sender = os.getenv("GMAIL_SEND_ADDRESS")
-#     send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=content_path)
-
-
-
-
 # Updates AWS database with data from Acuity CSV -- run this hourly
 def update_database():
     download_acuity_data()
@@ -240,5 +223,3 @@ def update_database():
 
 if __name__ == "__main__":
     update_database()
-    # csv_path = findMostRecentCSV(download_directory)
-    # sendBillingReminder(csv_path=csv_path)

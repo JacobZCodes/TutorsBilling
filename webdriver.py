@@ -1,20 +1,10 @@
 import os
 import time
+import dates
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-import dates
-from pathlib import Path
 
-def get_download_directory():
-    home = Path.home()
-    if os.name == 'nt':  # Windows
-        return str(home / 'Downloads')
-    elif os.name == 'posix':  # Linux and MacOS
-        return str(home / 'Downloads')
-    else:
-        raise NotImplementedError(f"Unsupported OS: {os.name}")
 
 class Browser:
     browser, service = None, None
@@ -50,7 +40,7 @@ def download_acuity_data():
     browser = Browser(os.getenv("CHROMEDRIVER_PATH")) # path to chromedriver
     browser.open_page("https://acuityscheduling.com/login.php?redirect=1")
     time.sleep(3)
-    browser.login_acuity("***REMOVED***", "***REMOVED***")  # CHANGE THIS BACK
+    browser.login_acuity(os.getenv("ACUITY_USER"), os.getenv("ACUITY_PASS"))  # CHANGE THIS BACK
     browser.click_button(By.CSS_SELECTOR, 'a[href="/reports.php"]')
     browser.click_button(By.CSS_SELECTOR, 'a[href="/reports.php?action=importexport"]')
     browser.add_input(By.ID, 'minDay-input', dates.start_date) # set this in dates.py

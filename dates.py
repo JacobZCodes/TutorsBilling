@@ -3,7 +3,6 @@ from dateutil.relativedelta import relativedelta
 
 today = datetime.now().strftime("%m/%d/%Y")
 
-# start_date = (datetime.now() - relativedelta(months=12)).strftime("%m/%d/%Y")
 start_date = '08/01/2023'
 
 month_dict = {
@@ -51,6 +50,3 @@ def is_new_client(slash_date_current, slash_date_today): # within the past 30 da
     else:
         return False # start date is not within the past 30 days
 
-
-# print(is_new_client('07/15/2023', '08/05/2023')) # Should return True
-# print(is_new_client('06/01/2023', '08/05/2023')) # Should return False
