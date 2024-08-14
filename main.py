@@ -19,7 +19,9 @@ def generateTxt(destination): # pretty write generic survey reminder as a .txt
 
     # Write the email content with a hyperlink
     with open(rf"{destination}\email.txt", "w") as file:
-        file.write(f"Hello, thank you for recently joining us at The Tutors! We hope that you have found our services helpful, and we'd appreciate your honest feedback on our survey; it shouldn't take more than five minutes. We look forward to meeting with you again!\nYou can find the link to the survey <a href='{survey_url}'>here</a>.<br><br>Best,<br>Name and Name")
+        # file.write(f"Hello, thank you for recently joining us at The Tutors! We hope that you have found our services helpful, and we'd appreciate your honest feedback on our survey; it shouldn't take more than five minutes. We look forward to meeting with you again!\nYou can find the link to the survey <a href='{survey_url}'>here</a>.<br><br>Best,<br>Name and Name")
+        file.write("You should receive this email")
+
     return (rf"{destination}\email.txt")
 
 # Checks at EOD every day and sends survey email
@@ -43,14 +45,12 @@ def send_survey():
             namesToRemove.append(name)
     for name in namesToRemove:
         del email[name]
-    print("printing pruned emaisl...\n")
+    print("printing pruned emails..\n")
     print(email)
 
     # REMOVE - ADD STAFF RECEPIENTS
     recepients = []
     recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-    recepients.append(os.getenv("GMAIL_RECEPIENT_3")) 
 
     # KEEP - ADD CLIENT RECEPIENTS
     for recepient in email.keys():
