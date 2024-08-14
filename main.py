@@ -50,7 +50,7 @@ def send_survey():
             namesToRemove.append(name)
     for name in namesToRemove:
         del addresses[name]
-    recepients[os.getenv("GMAIL_RECEPIENT_0")]
+    recepients.append(os.getenv("GMAIL_RECEPIENT_0"))
     
     # KEEP - ADD CLIENT RECEPIENTS
     for recepient in addresses.keys():
