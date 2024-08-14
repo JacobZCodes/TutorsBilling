@@ -1,12 +1,13 @@
 name: Send Survey
 
 on:
-  push:
-    branches:
-      - send-survey
-  pull_request:
-    branches:
-      - send-survey
+  # push:
+  #   branches:
+  #     - send-survey
+  # pull_request:
+  #   branches:
+  #     - send-survey
+  workflow_dispatch: # Allows for manual triggering
   schedule:
       - cron: '0 17 * * *'  # Runs every day at 5pm Central Standard Time (CST)
 
