@@ -1,11 +1,7 @@
-import os
 import smtplib
 from email.message import EmailMessage
 from dates import today
 
-# mostRecentData = process_billing_csv()
-# textfile = rf"C:\Users\Jacob\Desktop\TutorsBilling\{mostRecentData}" 
-# me = os.getenv("GMAIL_SEND_ADDRESS")
 
 def send_file(email_pass,sender,recepients,content_path):
     for recipient in recepients:

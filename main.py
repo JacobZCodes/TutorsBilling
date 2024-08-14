@@ -1,12 +1,18 @@
 import dates
-from dates import convert_comma_date_to_slash_date, is_past_today
 import os
-from download import get_download_directory
-import json
-from send_file import send_file
 import psycopg2
 import ast
+from pathlib import Path
+from send_file import send_file
 
+def get_download_directory():
+    home = Path.home()
+    if os.name == 'nt':  # Windows
+        return str(home / 'Downloads')
+    elif os.name == 'posix':  # Linux and MacOS
+        return str(home / 'Downloads')
+    else:
+        raise NotImplementedError(f"Unsupported OS: {os.name}")
 def createBillingDict(df):
     billing = {}
     for index, row in df.iterrows():
@@ -63,7 +69,6 @@ def read_and_send_debt_data():
         billing[fullName] = indebted_sessions_list
     
     sortedNames = sortBillingKeys(billing=billing)
-    total = getTotalOwed(billing)
     content_path  = generateTxt(destination=get_download_directory(), sortedNames=sortedNames, billing=billing)
     recepients = [] # TO DO - READ IN ENV VARS AS LIST
     recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
