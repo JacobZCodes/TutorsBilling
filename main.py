@@ -1,17 +1,25 @@
-import dates
-from dates import convert_comma_date_to_slash_date, is_past_today
 import os
-from download import get_download_directory
 import json
-from send_file import send_file
 import psycopg2
 import ast
+from pathlib import Path
+from send_file import send_file
 
+def get_download_directory():
+    home = Path.home()
+    if os.name == 'nt':  # Windows
+        return str(home / 'Downloads')
+    elif os.name == 'posix':  # Linux and MacOS
+        return str(home / 'Downloads')
+    else:
+        raise NotImplementedError(f"Unsupported OS: {os.name}")
 
-def generateTxt(destination): # pretty write billing to a .txt
+def generateTxt(destination): # pretty write generic survey reminder as a .txt
+    survey_url = "https://youtube.com/" # CHANGE ME
+
+    # Write the email content with a hyperlink
     with open(rf"{destination}\email.txt", "w") as file:
-        file.write("""Hello, thank you for recently joining us at The Tutors! We hope that you have found our services helpful, and we'd appreciate
-        your honest feedback on our survey; it shouldn't take more than five minutes. We look forward to meeting with you again!\n""")
+        file.write(f"Hello, thank you for recently joining us at The Tutors! We hope that you have found our services helpful, and we'd appreciate your honest feedback on our survey; it shouldn't take more than five minutes. We look forward to meeting with you again!\nYou can find the link to the survey <a href='{survey_url}'>here</a>.<br><br>Best,<br>Name and Name")
     return (rf"{destination}\email.txt")
 
 # Checks at EOD every day and sends survey email
@@ -39,10 +47,10 @@ def send_survey():
     print(email)
 
     # REMOVE - ADD STAFF RECEPIENTS
-    recepients = [] 
+    recepients = []
     recepients.append(os.getenv("GMAIL_RECEPIENT_1"))
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_3")) 
+    recepients.append(os.getenv("GMAIL_RECEPIENT_2"))
+    recepients.append(os.getenv("GMAIL_RECEPIENT_3")) 
 
     # KEEP - ADD CLIENT RECEPIENTS
     for recepient in email.keys():
@@ -51,7 +59,7 @@ def send_survey():
     email_pass = os.getenv("GMAIL_SURVEY_SENDER_PASS")
     sender = os.getenv("GMAIL_SURVEY_SENDER")
 
-    # send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=generateTxt(get_download_directory()))
+    send_file(email_pass=email_pass, sender=sender, recepients=recepients, content_path=generateTxt(get_download_directory()))
 
     # CHANGE RECEIVEDSURVEY TO BE TRUE
     for recepient in email.keys():
