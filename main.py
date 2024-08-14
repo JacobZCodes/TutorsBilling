@@ -38,6 +38,9 @@ def send_survey():
     rows = curr.fetchall()
     email = {}
 
+    # REMOVE SHOWING WHO IS VALID RECEPIENT
+    for row in rows:
+        print(row)
     # REMOVE PRUNING OF FARIS
     namesToRemove = []
     for name in email.keys():
