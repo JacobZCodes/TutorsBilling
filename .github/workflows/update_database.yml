@@ -1,9 +1,9 @@
 name: Database Update
 
 on:
-  # push:
-  #   branches:
-  #     - dev
+  push:
+    branches:
+      - update-database
   # pull_request:
   #   branches:
   #     - dev
