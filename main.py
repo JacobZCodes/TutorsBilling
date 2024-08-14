@@ -20,7 +20,7 @@ def generateTxt(destination): # pretty write generic survey reminder as a .txt
     # Write the email content with a hyperlink
     with open(rf"{destination}\email.txt", "w") as file:
         # file.write(f"Hello, thank you for recently joining us at The Tutors! We hope that you have found our services helpful, and we'd appreciate your honest feedback on our survey; it shouldn't take more than five minutes. We look forward to meeting with you again!\nYou can find the link to the survey <a href='{survey_url}'>here</a>.<br><br>Best,<br>Name and Name")
-        file.write("0")
+        file.write("10")
 
     return (rf"{destination}\email.txt")
 
