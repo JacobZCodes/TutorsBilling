@@ -37,15 +37,15 @@ def is_past_today(slash_date_current, slash_date_today):
     else:
         return False # date is today or in the past
 
-def is_new_client(slash_date_current, slash_date_today): # 30 - 45 days
+def is_new_client(slash_date_current, slash_date_today): # 30 - 35 days
     date_current = datetime.strptime(slash_date_current, '%m/%d/%Y')
     date_today = datetime.strptime(slash_date_today, '%m/%d/%Y')
     
     # Calculate the difference in days
     difference = (date_today - date_current).days
     
-    # Check if the difference is within 30 to 45 days
-    if 30 <= difference <= 45:
+    # Check if the difference is within 30 to 35 days
+    if 30 <= difference <= 35:
         return True
     else:
         return False
