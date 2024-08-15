@@ -5,7 +5,7 @@ import os
 import dates
 import subprocess
 from dates import convert_comma_date_to_slash_date, is_past_today, is_new_client
-from webdriver import download_acuity_data, get_download_directory
+from webdriver import download_acuity_data
 from pathlib import Path
 
 def findMostRecentCSV(directory): # Returns path to most recently created CSV
