@@ -91,7 +91,7 @@ def createDatesDict(df_partial_clean):
             dateDict[fullName].append(convert_comma_date_to_slash_date((row['Start Time'].split()[0] + " " + row['Start Time'].split()[1] + row['Start Time'].split()[2])))
     # print it out
     for key in dateDict.keys():
-        print(key, dateDict[key])
+        # print(key, dateDict[key])
     return dateDict
         
 
@@ -109,7 +109,7 @@ def populate_first_last_email(df_partial_clean):
 
 
     for index, row in df_partial_clean.iterrows(): # Populate first name, last name, and email
-        print(index)
+        # print(index)
         firstName = row['First Name']
         lastName = row['Last Name']
         fullName = firstName + "_" + lastName
@@ -178,7 +178,7 @@ def populate_startdate(datesDict):
         firstName = key.split("_")[0]
         lastName = key.split("_")[1]
         startDate = datesDict[key][0]
-        print(startDate)
+        # print(startDate)
         curr.execute("""UPDATE clients SET startdate = %s WHERE firstname = %s AND lastname = %s""", (startDate, firstName, lastName))
     
     conn.commit()
