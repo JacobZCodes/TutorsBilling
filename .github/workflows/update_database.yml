@@ -40,7 +40,7 @@ jobs:
         ACTIONS_RUNNER_DEBUG: true
         ACTIONS_STEP_DEBUG: true
         CHROMEDRIVER_PATH: ${{ env.CHROMEDRIVER_PATH }}        
-        ACUITY_PASSWORD: ${{ secrets.ACUITY_PASS }}
+        ACUITY_PASS: ${{ secrets.ACUITY_PASS }}
         ACUITY_USER: ${{ secrets.ACUITY_USER }}
         GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
         GMAIL_RECEPIENT_1: ${{ secrets.GMAIL_RECEPIENT_1 }}
