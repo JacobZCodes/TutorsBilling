@@ -89,9 +89,6 @@ def createDatesDict(df_partial_clean):
             dateDict[fullName] = [convert_comma_date_to_slash_date((row['Start Time'].split()[0] + " " + row['Start Time'].split()[1] + row['Start Time'].split()[2]))]
         else:
             dateDict[fullName].append(convert_comma_date_to_slash_date((row['Start Time'].split()[0] + " " + row['Start Time'].split()[1] + row['Start Time'].split()[2])))
-    # print it out
-    for key in dateDict.keys():
-        # print(key, dateDict[key])
     return dateDict
         
 
