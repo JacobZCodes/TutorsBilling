@@ -35,7 +35,7 @@ jobs:
       run: chromedriver --url-base=/wd/hub &  # credit to https://github.com/nanasess/setup-chromedriver
 
     - name: Run the script
-      run: py main.py
+      run: py update-database.py
       env:
         ACTIONS_RUNNER_DEBUG: true
         ACTIONS_STEP_DEBUG: true
