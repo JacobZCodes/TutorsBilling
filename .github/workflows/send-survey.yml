@@ -1,8 +1,7 @@
 name: Send Survey
 
 on:
-  workflow_run:
-    workflows: ["Trigger-Send-Survey"]
+  workflow_dispatch: # Allows for manual triggering
   
 jobs:
   build:
