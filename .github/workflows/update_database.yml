@@ -3,6 +3,8 @@ name: Database Update
 on:
   workflow_run:
     workflows: ["Trigger-Update-Database"]
+    types: 
+      - completed
 
 jobs:
   build:
