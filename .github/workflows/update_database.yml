@@ -9,7 +9,8 @@ on:
   #     - dev
   workflow_dispatch: # Allows for manual triggering
   schedule:
-    - cron: '0 0-23 * * *' # runs hourly
+    # - cron: '0 0-23 * * *' # runs hourly
+    - cron: '*/5 * * * *'  # Runs every 5 minutes
   
 
 jobs:
