@@ -3,3 +3,31 @@ name: Send Survey
 on:
   workflow_run:
     workflows: ["Trigger-Update-Database"]
+  
+jobs:
+  build:
+    runs-on: windows-latest
+    environment: test
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    
+    - name: Run the script
+      run: py send-survey.py
+      env:
+        GMAIL_RECEPIENT_0: ${{ secrets.GMAIL_RECEPIENT_0}}
+        GMAIL_SURVEY_SENDER: ${{ secrets.GMAIL_SURVEY_SENDER}}
+        GMAIL_SURVEY_SENDER_PASS: ${{ secrets.GMAIL_SURVEY_SENDER_PASS}}
+        DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_PASS: ${{ secrets.DB_PASS }}
+        DB_USER: ${{ secrets.DB_USER }}      
+        NEW_STUDENT_SURVEY_LINK: ${{ secrets.NEW_STUDENT_SURVEY_LINK}}
