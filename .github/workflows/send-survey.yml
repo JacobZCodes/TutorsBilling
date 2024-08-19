@@ -2,7 +2,7 @@ name: Send Survey
 
 on:
   workflow_run:
-    workflows: ["Trigger-Update-Database"]
+    workflows: ["Trigger-Send-Survey"]
   
 jobs:
   build:
