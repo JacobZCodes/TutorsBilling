@@ -1,4 +1,4 @@
-name: Send Survey
+name: Trigger-Send-Survey
 
 on:
   # push:
