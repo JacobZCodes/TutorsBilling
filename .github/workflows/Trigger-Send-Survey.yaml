@@ -5,8 +5,5 @@ on:
     - cron: '*/5 * * * *'  # Runs every 5 minutes
     
 jobs:
-  trigger:
+  build:
     runs-on: ubuntu-latest
-    steps:
-    - name: Triggered workflow
-      run: echo "This workflow only triggers another workflow and does nothing else."
