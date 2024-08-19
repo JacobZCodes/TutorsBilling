@@ -1,17 +1,8 @@
 name: Database Update
 
 on:
-  # push:
-  #   branches:
-  #     - update-database
-  # pull_request:
-  #   branches:
-  #     - dev
-  workflow_dispatch: # Allows for manual triggering
-  schedule:
-    # - cron: '0 0-23 * * *' # runs hourly
-    - cron: '*/5 * * * *'  # Runs every 5 minutes
-  
+  workflow_run:
+    workflows: ["Trigger-Update-Database"]
 
 jobs:
   build:
