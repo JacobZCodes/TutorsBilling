@@ -28,7 +28,7 @@ jobs:
       run: pip install -r requirements.txt
     
     - name: Run the script
-      run: py main.py
+      run: py send-survey.py
       env:
         GMAIL_RECEPIENT_0: ${{ secrets.GMAIL_RECEPIENT_0}}
         GMAIL_SURVEY_SENDER: ${{ secrets.GMAIL_SURVEY_SENDER}}
