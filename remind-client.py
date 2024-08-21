@@ -17,7 +17,7 @@ def get_download_directory():
 
 def generateTxt(destination, sessions_as_string):
     with open(rf"{destination}\email.txt", "w") as file:
-        file.write(f"Hello, we have recently been doing an audit on our back-billing and have found that you owe the following:<br> {sessions_as_string}")
+        file.write(f"Hello, we have recently been doing an audit on our back-billing and have found that you owe the following:<br><br> {sessions_as_string}")
     return (rf"{destination}\email.txt")
 
 def find_key_by_value(dictionary, target_value):
