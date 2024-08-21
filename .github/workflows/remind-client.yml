@@ -1,4 +1,4 @@
-name: Send Survey
+name: Remind Client
 
 on:
   # push:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch: # Allows for manual triggering
   schedule:
       # - cron: '*/5 * * * *'  # Runs every 5 minutes
-      - cron: '0 17 * * *'  # Runs every day at 5pm Central Standard Time (CST)
+      # - cron: '0 17 * * *'  # Runs every day at 5pm Central Standard Time (CST)
 
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
       run: pip install -r requirements.txt
     
     - name: Run the script
-      run: py send-survey.py
+      run: py remind-client.py
       env:
         GMAIL_RECEPIENT_0: ${{ secrets.GMAIL_RECEPIENT_0}}
         GMAIL_SURVEY_SENDER: ${{ secrets.GMAIL_SURVEY_SENDER}}
@@ -39,3 +39,6 @@ jobs:
         DB_PASS: ${{ secrets.DB_PASS }}
         DB_USER: ${{ secrets.DB_USER }}      
         NEW_STUDENT_SURVEY_LINK: ${{ secrets.NEW_STUDENT_SURVEY_LINK}}
+        DB_CONN: ${{ secrets.DB_CONN }}
+        GMAIL_REMINDER_SENDER: ${{ secrets.GMAIL_REMINDER_SENDER }}
+        GMAIL_REMINDER_SENDER_PASS: ${{ secrets.GMAIL_REMINDER_SENDER_PASS }}
