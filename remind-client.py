@@ -83,7 +83,7 @@ def remind_client():
     for person in owes.keys():
         sessions_as_string = ""
         for index,session in enumerate(owes[person][0]):
-            sessions_as_string += owes[person][0][index][0] + " " + owes[person][0][index][1] + "\n"
+            sessions_as_string += owes[person][0][index][0] + " " + owes[person][0][index][1] + "<br>"
         path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string)
         send_file(email_pass=email_pass, sender=sender, recepient=owes[person][1],content_path=path_to_email)
         
