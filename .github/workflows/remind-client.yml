@@ -1,6 +1,9 @@
 name: Remind Client
 
 on:
+  push:
+    branches:
+      - remind-client
   workflow_dispatch: # Allows for manual triggering
 
 jobs:
