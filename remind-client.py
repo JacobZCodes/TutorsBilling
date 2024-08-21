@@ -76,14 +76,14 @@ def remind_client():
         except KeyError:
             continue
 
-
+    print(owes["***REMOVED***"][0])
     # Email each person in owes
     email_pass = os.getenv("GMAIL_REMINDER_SENDER_PASS")
     sender = os.getenv("GMAIL_REMINDER_SENDER")
     for person in owes.keys():
         sessions_as_string = ""
-        for session in owes[person][0]:
-            sessions_as_string += owes[person][0][0][0] + " " + owes[person][0][0][1] + "\n"
+        for index,session in enumerate(owes[person][0]):
+            sessions_as_string += owes[person][0][index][0] + " " + owes[person][0][index][1] + "\n"
         path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string)
         send_file(email_pass=email_pass, sender=sender, recepient=owes[person][1],content_path=path_to_email)
         
