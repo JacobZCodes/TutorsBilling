@@ -87,9 +87,11 @@ def remind_client():
         path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string, full_name_underscore=person)
         send_file(email_pass=email_pass, sender=sender, recipient=owes[person][1],content_path=path_to_email)
 
-    # TO DO - UPDATE HASBEENREMINDED DATE FOR EMAILED UESRS
-
-    curr.commit()
+    for person in owes.keys():
+        first_name = person.split("_")[0]
+        last_name = person.split("_")[1]
+        curr.execute("""UPDATE clients SET datereminded = %s WHERE firstname = %s AND lastname = %s;""", (today,first_name,last_name,)
+    conn.commit()
     curr.close()
     conn.close()
 
