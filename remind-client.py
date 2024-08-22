@@ -67,7 +67,7 @@ def remind_client():
     
     # REMOVE - TEST RUN FOR FARIS
     for key in owes.keys():
-        if key != "***REMOVED***":
+        if key != "Faris_Haykal":
             persons_to_remove.append(key)
     
     for person in persons_to_remove:
@@ -76,7 +76,7 @@ def remind_client():
         except KeyError:
             continue
 
-    print(owes["***REMOVED***"][0])
+    print(owes["Faris_Haykal"][0])
     # Email each person in owes
     email_pass = os.getenv("GMAIL_REMINDER_SENDER_PASS")
     sender = os.getenv("GMAIL_REMINDER_SENDER")
