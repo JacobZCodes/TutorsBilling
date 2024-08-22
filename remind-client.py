@@ -17,9 +17,8 @@ def get_download_directory():
 
 def generateTxt(destination, sessions_as_string, full_name_underscore):
     first_name = full_name_underscore.split("_")[0]
-    last_name = full_name_underscore.split("_")[1]
     with open(rf"{destination}\email.txt", "w") as file:
-        file.write(f"We have been doing an internal review of our billing, and our system shows that the following<br>dates of service from the past year have not been paid for {first_name} {last_name}:<br><br>{sessions_as_string}<br>Often this is due to an expired card or security block. Because we run billing session by session,<br> occasionally some billing also slips through the cracks. Please let us know if we can proceed in<br>running these sessions by replying to this email. If you have changed your card, you can call us<br>at (901) 590-3318 so that we can update your billing information.<br><br> If you have any questions or concerns, don’t hesitate to reach out and we would be happy to address them.<br><br>Thanks,<br><br>Faris and Zane<br>The Tutors<br><br>")
+        file.write(f"We have been doing an internal review of our billing, and our system shows that the following<br>dates of service from the past year have not been paid for {first_name}:<br><br>{sessions_as_string}<br>Often this is due to an expired card or security block. Because we run billing session by session,<br> occasionally some billing also slips through the cracks. Please let us know if we can proceed in<br>running these sessions by replying to this email. If you have changed your card, you can call us<br>at (901) 590-3318 so that we can update your billing information.<br><br> If you have any questions or concerns, don’t hesitate to reach out and we would be happy to address them.<br><br>Thanks,<br><br>Faris and Zane<br>The Tutors<br><br>")
     return (rf"{destination}\email.txt")
 
 def find_key_by_value(dictionary, target_value):
@@ -86,7 +85,7 @@ def remind_client():
         sessions_as_string = ""
         for index,session in enumerate(owes[person][0]):
             sessions_as_string += owes[person][0][index][0] + " " + owes[person][0][index][1] + "<br>"
-        path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string, person)
+        path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string, full_name_underscore=person)
         send_file(email_pass=email_pass, sender=sender, recepient=owes[person][1],content_path=path_to_email)
         
 
