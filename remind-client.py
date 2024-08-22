@@ -77,7 +77,6 @@ def remind_client():
         except KeyError:
             continue
 
-    print(owes["Faris_Haykal"][0])
     # Email each person in owes
     email_pass = os.getenv("GMAIL_REMINDER_SENDER_PASS")
     sender = os.getenv("GMAIL_REMINDER_SENDER")
@@ -87,45 +86,12 @@ def remind_client():
             sessions_as_string += owes[person][0][index][0] + " " + owes[person][0][index][1] + "<br>"
         path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string, full_name_underscore=person)
         send_file(email_pass=email_pass, sender=sender, recepient=owes[person][1],content_path=path_to_email)
-        
 
-        
-        
+    # TO DO - UPDATE HASBEENREMINDED DATE FOR EMAILED UESRS
 
-     
-    exit(0)
-    # REMOVE PRUNING OF FARIS AND JACOB
-    # recepients = []
-    # namesToRemove = []
-    # for name in addresses.keys():
-    #     if name != "***REMOVED***":
-    #         namesToRemove.append(name)
-    # for name in namesToRemove: 
-    #     del addresses[name]
-    # recepients.append(os.getenv("GMAIL_RECEPIENT_0"))
-    
-    # KEEP - ADD CLIENT RECEPIENTS
-    # for recepient in addresses.keys():
-    #     recepients.append(addresses[recepient])
-    
-    email_pass = os.getenv("GMAIL_SURVEY_SENDER_PASS")
-    sender = os.getenv("GMAIL_SURVEY_SENDER")
-
-    send_file(email_pass=email_pass, sender=sender, recepients=addresses.values(), content_path=generateTxt(get_download_directory()))
-
-    # # CHANGE RECEIVEDSURVEY TO BE TRUE
-    # for recepient in addresses.keys():
-    #     firstName = recepient.split("_")[0]
-    #     lastName = recepient.split("_")[1]
-    #     curr.execute(f"""
-    #     UPDATE clients
-    #     SET receivedsurvey = TRUE
-    #     WHERE firstName = %s AND lastName = %s;
-    #     """, (firstName, lastName))
-    # conn.commit()
+    curr.commit()
     curr.close()
     conn.close()
-
 
 if __name__ == "__main__":
     remind_client()
