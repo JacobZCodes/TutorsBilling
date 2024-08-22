@@ -85,7 +85,7 @@ def remind_client():
         for index,session in enumerate(owes[person][0]):
             sessions_as_string += owes[person][0][index][0] + " " + owes[person][0][index][1] + "<br>"
         path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string, full_name_underscore=person)
-        send_file(email_pass=email_pass, sender=sender, recepient=owes[person][1],content_path=path_to_email)
+        send_file(email_pass=email_pass, sender=sender, recipient=owes[person][1],content_path=path_to_email)
 
     # TO DO - UPDATE HASBEENREMINDED DATE FOR EMAILED UESRS
 
