@@ -51,6 +51,9 @@ def is_sixty_or_more_days_ago(slash_date_current, slash_date_today):
         return False
 
 def is_fourteen_or_more_days_ago(slash_date_current, slash_date_today):
+    if (slash_date_current is None): # In context of program, client has never been reminded before, so we want to count them in owes
+        return True
+        
     date_current = datetime.strptime(slash_date_current, '%m/%d/%Y')
     date_today = datetime.strptime(slash_date_today, '%m/%d/%Y')
     
