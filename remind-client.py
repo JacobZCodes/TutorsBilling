@@ -4,7 +4,7 @@ import psycopg2
 import ast
 from pathlib import Path
 from send_file import send_file
-from dates import is_sixty_or_more_days_ago, today
+from dates import is_sixty_or_more_days_ago, is_fourteen_or_more_days_ago, today
 
 def get_download_directory():
     home = Path.home()
@@ -48,6 +48,10 @@ def remind_client():
         for list in list_of_lists:
             total+=float(list[1])
         if (total <= 400):
+            # If datereminded is NOT fourteen or more days ago, skip over this person
+            if (is_fourteen_or_more_days_ago(row[7)) == False):
+                print(f"Skipping {row[0]}")
+                continue
             fullName = row[0] + "_" + row[1]
             owes[fullName] = [list_of_lists, row[2]] # owes["John_Smith"] = [ [ [08/23/23, 45.0], [09/23/23, 45.0] ], "john.smith@gmail.com"]
     
@@ -65,10 +69,12 @@ def remind_client():
             continue
         person_to_remove = find_key_by_value(owes, value)
         persons_to_remove.append(person_to_remove)
-
-    # ONLY EMAIL THOSE WHOSE WHOSE DATEREMINDED VALUE IS 14 OR MORE DAYS AGO
+    
     for person in persons_to_remove:
-        del owes[person]
+        try:
+            del owes[person]
+        except KeyError:
+            continue
     
     # REMOVE - TEST RUN FOR FARIS
     for key in owes.keys():
