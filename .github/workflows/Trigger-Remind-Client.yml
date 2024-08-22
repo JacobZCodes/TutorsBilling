@@ -14,7 +14,7 @@ jobs:
     - name: No Operation Step
       run: echo "This workflow only serves to trigger another workflow."
 
-    - name: Trigger Send Survey on send-survey branch
+    - name: Trigger Remind Client on remind-client branch
       run: |
         curl -L \
             -X POST \
