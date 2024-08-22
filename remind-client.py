@@ -28,7 +28,7 @@ def find_key_by_value(dictionary, target_value):
             return key
     return None  # If the value is not found, return None
 
-# Checks at EOD every day and sends survey email
+# Runs at 10am Mondays
 def remind_client():
     # CHANGE THESE BACK TO VARS
     conn = psycopg2.connect(os.getenv("DB_CONN"))
@@ -49,7 +49,7 @@ def remind_client():
             total+=float(list[1])
         if (total <= 400):
             # If datereminded is NOT fourteen or more days ago, skip over this person
-            if (is_fourteen_or_more_days_ago(row[7)) == False):
+            if (is_fourteen_or_more_days_ago(row[7) == False):
                 print(f"Skipping {row[0]}")
                 continue
             fullName = row[0] + "_" + row[1]
