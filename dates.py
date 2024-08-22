@@ -50,7 +50,7 @@ def is_sixty_or_more_days_ago(slash_date_current, slash_date_today):
     else:
         return False
 
-def is_fourteen_or_less_days_ago(slash_date_current, slash_date_today):
+def is_fourteen_or_more_days_ago(slash_date_current, slash_date_today):
     date_current = datetime.strptime(slash_date_current, '%m/%d/%Y')
     date_today = datetime.strptime(slash_date_today, '%m/%d/%Y')
     
@@ -58,7 +58,7 @@ def is_fourteen_or_less_days_ago(slash_date_current, slash_date_today):
     difference = (date_today - date_current).days
     
     # Check if the difference is greater than or equal to 14 days
-    if difference <= 14:
+    if difference >= 14:
         return True
     else:
         return False
