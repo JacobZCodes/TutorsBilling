@@ -90,7 +90,7 @@ def remind_client():
     for person in owes.keys():
         first_name = person.split("_")[0]
         last_name = person.split("_")[1]
-        curr.execute("""UPDATE clients SET datereminded = %s WHERE firstname = %s AND lastname = %s;""", (today,first_name,last_name,)
+        curr.execute("""UPDATE clients SET datereminded = %s WHERE firstname = %s AND lastname = %s;""", (today,first_name,last_name,))
     conn.commit()
     curr.close()
     conn.close()
