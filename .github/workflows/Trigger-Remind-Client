@@ -1,5 +1,8 @@
 name: Trigger-Remind-Client
 on:
+  push:
+    branches:
+      - remind-client
   schedule:
     - cron: '0 15 * * 1'  # Runs Monday at 9AM CST
   workflow_dispatch: # Allows for manual triggering
