@@ -50,7 +50,6 @@ def remind_client():
         if (total <= 400):
             # If datereminded is NOT fourteen or more days ago, skip over this person
             if (is_fourteen_or_more_days_ago(row[7], today) == False):
-                print(f"Skipping {row[0]}")
                 continue
             fullName = row[0] + "_" + row[1]
             owes[fullName] = [list_of_lists, row[2]] # owes["John_Smith"] = [ [ [08/23/23, 45.0], [09/23/23, 45.0] ], "john.smith@gmail.com"]
