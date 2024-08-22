@@ -40,6 +40,7 @@ def remind_client():
 """)
     owes = {}
     rows = curr.fetchall()
+    # ADD PEOPLE FROM OWES WHO OWE <= 400 DOLLARS
     for row in rows:
         formatted_string = f"[{row[6]}]"
         list_of_lists = ast.literal_eval(formatted_string)
@@ -51,6 +52,7 @@ def remind_client():
             owes[fullName] = [list_of_lists, row[2]] # owes["John_Smith"] = [ [ [08/23/23, 45.0], [09/23/23, 45.0] ], "john.smith@gmail.com"]
     
     persons_to_remove = [] # people who never have a session earlier than 60 days
+    # ONLY EMAIL THOSE WHO HAVE AT LEAST ONE SESSION 60 OR MORE DAYS AGO
     for value in owes.values():
         will_be_emailed = False
         session_list = value[0]
@@ -63,7 +65,8 @@ def remind_client():
             continue
         person_to_remove = find_key_by_value(owes, value)
         persons_to_remove.append(person_to_remove)
-        
+
+    # ONLY EMAIL THOSE WHOSE WHOSE DATEREMINDED VALUE IS 14 OR MORE DAYS AGO
     for person in persons_to_remove:
         del owes[person]
     
