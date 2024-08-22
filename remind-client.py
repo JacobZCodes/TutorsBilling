@@ -17,7 +17,7 @@ def get_download_directory():
 
 def generateTxt(destination, sessions_as_string):
     with open(rf"{destination}\email.txt", "w") as file:
-        file.write(f"Dear Parents,<br><br>We have been doing an internal review of our billing, and our system shows that the following<br>dates of service from the past year have not been paid:<br><br>{sessions_as_string}Often this is due to an expired card or security block. Because we run billing session by session,<br> occasionally some billing also slips through the cracks. Please let us know if we can proceed in<br>running these sessions by replying to this email. If you have changed your card, you can call us<br>at (901) 590-3318 so that we can update your billing information.<br><br> If you have any questions or concerns, don’t hesitate to reach out and we would be happy to address them.<br><br>Thanks,<br><br>Faris and Zane<br>The Tutors<br><br>")
+        file.write(f"Dear Parents,<br><br>We have been doing an internal review of our billing, and our system shows that the following<br>dates of service from the past year have not been paid:<br><br>{sessions_as_string}<br>Often this is due to an expired card or security block. Because we run billing session by session,<br> occasionally some billing also slips through the cracks. Please let us know if we can proceed in<br>running these sessions by replying to this email. If you have changed your card, you can call us<br>at (901) 590-3318 so that we can update your billing information.<br><br> If you have any questions or concerns, don’t hesitate to reach out and we would be happy to address them.<br><br>Thanks,<br><br>Faris and Zane<br>The Tutors<br><br>")
     return (rf"{destination}\email.txt")
 
 def find_key_by_value(dictionary, target_value):
