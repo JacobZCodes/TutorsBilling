@@ -12,7 +12,7 @@ def send_file(email_pass, sender, recepient, content_path):
 
     # Create the email message object
     msg = EmailMessage()
-    msg['Subject'] = 'Tutors Billing'
+    msg['Subject'] = 'The Tutors: Outstanding Balance'
     msg['From'] = me
     msg['To'] = you
 
