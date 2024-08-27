@@ -3,6 +3,8 @@ import smtplib
 from email.message import EmailMessage
 
 def send_file(full_name, email_pass, sender, recipient, content_path):
+    conn = psycopg2.connect(os.getenv("DB_CONN"))
+    curr = conn.cursor() 
     me = sender
     you = recipient  # Recipient's email address
 
@@ -63,5 +65,6 @@ def send_file(full_name, email_pass, sender, recipient, content_path):
         s.starttls()  # Secure the connection
         s.login(me, gmail_password)  # Login with your Gmail credentials
         s.send_message(msg)  # Send the email
+        
         s.quit()  # Close the connection
 
