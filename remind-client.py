@@ -79,17 +79,17 @@ def remind_client():
     email_pass = os.getenv("GMAIL_REMINDER_SENDER_PASS")
     sender = os.getenv("GMAIL_REMINDER_SENDER")
     for person in owes.keys():
+        email = ""
         print(owes[person][1]) # show me emails
-        # sessions_as_string = ""
-        # for index,session in enumerate(owes[person][0]):
-        #     sessions_as_string += owes[person][0][index][0] + " " + owes[person][0][index][1] + "<br>"
-        # path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string, full_name_underscore=person)
-        # send_file(email_pass=email_pass, sender=sender, recipient=owes[person][1],content_path=path_to_email)
-    exit(0)
-    for person in owes.keys():
-        first_name = person.split("_")[0]
-        last_name = person.split("_")[1]
-        curr.execute("""UPDATE clients SET datereminded = %s WHERE firstname = %s AND lastname = %s;""", (today,first_name,last_name,))
+        sessions_as_string = ""
+        for index,session in enumerate(owes[person][0]):
+            sessions_as_string += owes[person][0][index][0] + " " + owes[person][0][index][1] + "<br>"
+        if ',' in owes[person][1]: # multiple emails got populated for this person
+            email = owes[person][1].split(",")[0] # grab any email arbitrarily
+        else:
+            email = owes[person][1]
+        path_to_email = generateTxt(get_download_directory(), sessions_as_string=sessions_as_string, full_name_underscore=person)
+        send_file(full_name = person,email_pass=email_pass, sender=sender, recipient=email,content_path=path_to_email)
     conn.commit()
     curr.close()
     conn.close()
