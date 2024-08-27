@@ -3,6 +3,8 @@ import smtplib
 from email.message import EmailMessage
 
 def send_file(full_name, email_pass, sender, recipient, content_path):
+    first_name = full_name.split("_")[0]
+    last_name = full_name.split("_")[1]
     conn = psycopg2.connect(os.getenv("DB_CONN"))
     curr = conn.cursor() 
     me = sender
@@ -65,6 +67,6 @@ def send_file(full_name, email_pass, sender, recipient, content_path):
         s.starttls()  # Secure the connection
         s.login(me, gmail_password)  # Login with your Gmail credentials
         s.send_message(msg)  # Send the email
-        
+        curr.execute("""UPDATE clients SET datereminded = %s WHERE firstname = %s AND lastname = %s;""", (today,first_name,last_name,)) #
         s.quit()  # Close the connection
 
