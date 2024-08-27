@@ -22,14 +22,6 @@ jobs:
     - name: Run the script
       run: py remind-client.py
       env:
-        GMAIL_RECEPIENT_0: ${{ secrets.GMAIL_RECEPIENT_0}}
-        GMAIL_SURVEY_SENDER: ${{ secrets.GMAIL_SURVEY_SENDER}}
-        GMAIL_SURVEY_SENDER_PASS: ${{ secrets.GMAIL_SURVEY_SENDER_PASS}}
-        DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        DB_PASS: ${{ secrets.DB_PASS }}
-        DB_USER: ${{ secrets.DB_USER }}      
-        NEW_STUDENT_SURVEY_LINK: ${{ secrets.NEW_STUDENT_SURVEY_LINK}}
         DB_CONN: ${{ secrets.DB_CONN }}
         GMAIL_REMINDER_SENDER: ${{ secrets.GMAIL_REMINDER_SENDER }}
         GMAIL_REMINDER_SENDER_PASS: ${{ secrets.GMAIL_REMINDER_SENDER_PASS }}
