@@ -2,7 +2,7 @@ import os
 import smtplib
 from email.message import EmailMessage
 
-def send_file(email_pass, sender, recipient, content_path):
+def send_file(full_name, email_pass, sender, recipient, content_path):
     me = sender
     you = recipient  # Recipient's email address
 
