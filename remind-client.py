@@ -85,8 +85,6 @@ def remind_client():
             del owes[person]
         except KeyError:
             continue
-    print(owes) # THIS SHOULD OUTPUT NOTHING RIGHT NOW 
-    exit(0)
     # Email each person in owes
     email_pass = os.getenv("GMAIL_REMINDER_SENDER_PASS")
     sender = os.getenv("GMAIL_REMINDER_SENDER")
