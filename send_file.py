@@ -1,6 +1,7 @@
 import os
 import smtplib
 from email.message import EmailMessage
+from dates import today
 
 def send_file(full_name, email_pass, sender, recipient, content_path):
     first_name = full_name.split("_")[0]
