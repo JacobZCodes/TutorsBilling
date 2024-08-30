@@ -67,8 +67,12 @@ def send_file(full_name, email_pass, sender, recipient, content_path):
     # Send the message via Gmail SMTP server
     with smtplib.SMTP(smtp_server, smtp_port) as s:
         s.starttls()  # Secure the connection
+        print(f"Email is {recipient}")
+        print("Trying to login...")
         s.login(me, gmail_password)  # Login with your Gmail credentials
+        print("Login works....")
         s.send_message(msg)  # Send the email
+        print("Sent message...")
         curr.execute("""UPDATE clients SET datereminded = %s WHERE firstname = %s AND lastname = %s;""", (today,first_name,last_name,)) #
         s.quit()  # Close the connection
 
