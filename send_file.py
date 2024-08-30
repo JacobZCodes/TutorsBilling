@@ -1,5 +1,6 @@
 import os
 import smtplib
+import psycopg2
 from email.message import EmailMessage
 from dates import today
 
