@@ -74,8 +74,17 @@ def remind_client():
             del owes[person]
         except KeyError:
             continue
-    print(owes)
-    exit(0)
+            
+    # REMOVE PEOPLE WHOSE EMAIL ADDRESSES DIDN'T POPULATE
+    perons_to_remove = []
+    for person in owes.keys():
+        if "@" not in owes[person][1]:
+            persons_to_remove.append(person)
+    for person in persons_to_remove:
+        try:
+            del owes[person]
+        except KeyError:
+            continue
     # Email each person in owes
     email_pass = os.getenv("GMAIL_REMINDER_SENDER_PASS")
     sender = os.getenv("GMAIL_REMINDER_SENDER")
