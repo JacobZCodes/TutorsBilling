@@ -71,8 +71,11 @@ def send_file(full_name, email_pass, sender, recipient, content_path):
         print("Trying to login...")
         s.login(me, gmail_password)  # Login with your Gmail credentials
         print("Login works....")
-        s.send_message(msg)  # Send the email
+        # s.send_message(msg)  # Send the email
         print("Sent message...")
         curr.execute("""UPDATE clients SET datereminded = %s WHERE firstname = %s AND lastname = %s;""", (today,first_name,last_name,)) #
         s.quit()  # Close the connection
+        conn.commit()
+        curr.close()
+        conn.close()
 
