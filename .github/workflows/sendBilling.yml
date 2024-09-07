@@ -9,6 +9,7 @@ on:
   #     - main
   schedule:
     - cron: '0 16 * * 1'  # Runs every Monday at 10am Central Standard Time (CST)
+  workflow_dispatch: # Allows for manual triggering
 
 jobs:
   build:
