@@ -8,6 +8,60 @@ from dates import convert_comma_date_to_slash_date, is_past_today, is_new_client
 from webdriver import download_acuity_data
 from pathlib import Path
 
+def connectToDB():
+    return psycopg2.connect (
+    dbname= os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    host=os.getenv("DB_ENDPOINT"),
+    port='5432' 
+    )
+
+def convertOwesListofListsToString(billingDict, key):
+    owes = ""
+    for value in billingDict[key]: # [session date, amount owed]
+        owes += str(value) + " ,"
+    return owes
+
+def setDebt(curr, billingCSV):
+    for key in billingCSV.keys(): # Add to owes column
+        firstName = key.split("_")[0]
+        lastName = key.split("_")[1]
+        owes = convertOwesListofListsToString(billingCSV, key)
+        curr.execute(f"""
+        UPDATE clients
+        SET owes = %s
+        WHERE firstName = %s AND lastName = %s;
+        """, (owes, firstName, lastName))
+
+def cleanDebt(curr, billingCSV):
+    # Fetch all records from DB
+    curr.execute("""SELECT * FROM clients;""")
+    records = curr.fetchall()
+    for record in records:
+        firstName = record[0]
+        lastName = record[1]
+        # If remote key not in billingCSV, wipe their debt completely
+        if ((firstName + "_" + lastName) not in billingCSV.keys()):
+            curr.execute(f"""
+            UPDATE clients
+            SET owes = NULL
+            WHERE firstName = %s AND lastName = %s;
+            """, (firstName, lastName))
+            continue
+        # If remote key in billingCSV, update remote owes with CSV owes
+        else:
+            owesCSV = convertOwesListofListsToString(billingCSV, firstName + "_" + lastName)
+            curr.execute(f"""
+            UPDATE clients
+            SET owes = %s
+            WHERE firstName = %s AND lastName = %s;
+            """, (owesCSV, firstName, lastName))
+            continue
+
+
+    
+
 def findMostRecentCSV(directory): # Returns path to most recently created CSV
     command = ["powershell", "-Command", f"""Get-ChildItem -Path "{directory}" -Filter *.csv | Sort-Object CreationTime | Select-Object Name, CreationTime"""]
     result = subprocess.run(command, capture_output=True, text=True)
@@ -95,13 +149,7 @@ def createDatesDict(df_partial_clean):
 # Populates a first,last,email columns and returns a list of client first last names
 def populate_first_last_email(df_partial_clean):
     clientNames = []
-    conn = psycopg2.connect (
-    dbname= os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASS"),
-    host=os.getenv("DB_ENDPOINT"),
-    port='5432' 
-    )
+    conn = connectToDB()
     curr = conn.cursor()    
 
 
@@ -121,7 +169,7 @@ def populate_first_last_email(df_partial_clean):
             email = ''
 
         # Check if record already exists -- skip over it if it does
-        curr.execute("""SELECT 1 FROM clients WHERE firstName=%s AND lastName = %s;""", (firstName,lastName))
+        curr.execute("""SELECT * FROM clients WHERE firstName=%s AND lastName = %s;""", (firstName,lastName))
         exists = curr.fetchone()       
         if exists:
             continue
@@ -134,48 +182,27 @@ def populate_first_last_email(df_partial_clean):
     conn.close()
     return clientNames
 
-def populate_owes(df_all):
-    conn = psycopg2.connect (
-    dbname= os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASS"),
-    host=os.getenv("DB_ENDPOINT"),
-    port='5432' 
-    )
+def update_owes(df_all):
+    conn = connectToDB()
     curr = conn.cursor()    
     df_clean = clean_df(df_all) # Create a separate df whose members include only people who OWE money
-    billing = createBillingDict(df_clean)
-    for key in billing.keys(): # Add to owes column
-        firstName = key.split("_")[0]
-        lastName = key.split("_")[1]
-        owesValue = ""
-        for value in billing[key]: # [session date, amount owed]
-            owesValue += str(value) + " ,"
+    billingCSV = createBillingDict(df_clean) # People on CSV who owe money
+    setDebt(curr, billingCSV) # Debt shrinks or grows
+    cleanDebt(curr, billingCSV) # Debt goes away, shrinks, or stays the same
 
-        curr.execute(f"""
-        UPDATE clients
-        SET owes = %s
-        WHERE firstName = %s AND lastName = %s;
-        """, (owesValue, firstName, lastName))
     conn.commit()
 
     curr.close()
     conn.close()
 
 def populate_startdate(datesDict):
-    conn = psycopg2.connect (
-    dbname= os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASS"),
-    host=os.getenv("DB_ENDPOINT"),
-    port='5432' 
-    )
+    conn = connectToDB()
     curr = conn.cursor()    
     for key in datesDict.keys():
         firstName = key.split("_")[0]
         lastName = key.split("_")[1]
-        startDate = datesDict[key][0]
-        # print(startDate)
+        startDate = datesDict[key][0]        
+
         curr.execute("""UPDATE clients SET startdate = %s WHERE firstname = %s AND lastname = %s""", (startDate, firstName, lastName))
     
     conn.commit()
@@ -184,13 +211,7 @@ def populate_startdate(datesDict):
     conn.close()
 
 def populate_isnewclient():
-    conn = psycopg2.connect (
-    dbname= os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASS"),
-    host=os.getenv("DB_ENDPOINT"),
-    port='5432' 
-    )
+    conn = connectToDB()
     curr = conn.cursor()
     
     curr.execute("""SELECT * FROM clients;""")
@@ -214,7 +235,7 @@ def update_database():
     df_all = get_df_all()
     df_partial_clean = partial_clean_df(df_all)
     populate_first_last_email(df_partial_clean)
-    populate_owes(df_all)
+    update_owes(df_all)
     populate_startdate(createDatesDict(df_partial_clean))   
     populate_isnewclient()
 
